@@ -127,7 +127,7 @@ Nenhum impedimento identificado.
 
 # 5. Sprint Review
 
-**Data:** XX/09/2026
+**Data:** 21/09/2026
 
 Ao final da Sprint 3, o grupo realizou uma revisão dos itens planejados e verificou os artefatos desenvolvidos.
 
