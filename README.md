@@ -251,7 +251,7 @@ Entre as atividades realizadas estão:
 
 O board completo da Sprint 3 pode ser acessado pelo link abaixo:
 
-[Board Scrum — Sprint 3](https://trello.com/invite/b/6ab145e5bbe51e2f7b4a81fd/ATTI50f16de1aec0475c2d989d1dba56ced131F614E8/sprint-3)
+[Board Scrum — Sprint 3](https://trello.com/b/hlOQ2wC8)
 
 ---
 
@@ -499,7 +499,7 @@ https://github.com/LMedeiros-Silva/metaindustria-seguranca-ia
 
 ## Trello
 
-https://trello.com/invite/b/6ab145e5bbe51e2f7b4a81fd/ATTI50f16de1aec0475c2d989d1dba56ced131F614E8/sprint-3
+https://trello.com/b/hlOQ2wC8
 
 ## Figma
 
