@@ -181,16 +181,17 @@ Set-Location C:\dev\metaindustria-seguranca-ia\2identify_operador
 - `download_face_models.py` confere os ONNX YuNet/SFace já versionados (responde `OK:`) e os
   baixa do OpenCV Zoo somente se faltarem ou estiverem corrompidos.
 - `download_pose_model.py` baixa `yolo11n-pose.pt` do release oficial da Ultralytics e confere o SHA-256.
-- O detector de EPI `best.pt` (≈6,2 MB) **não está no Git** e não há release público com ele.
-  Solicite ao grupo, copie para `2identify_operador\models\ppe\best.pt` e confira:
+- O detector de EPI `best.pt` (versão retreinada, 6.254.698 bytes) **já vem no clone**, em
+  `2identify_operador\models\ppe\best.pt`. Para conferir a integridade:
 
 ```powershell
-New-Item -ItemType Directory -Force .\models\ppe | Out-Null
 (Get-FileHash .\models\ppe\best.pt -Algorithm SHA256).Hash
 ```
 
-O resultado deve ser `2EBD001C8AB294D27C184BD78C48236C019BB684D9774455DF0868B4E39F011F`
-(valor de `PPE_MODEL_SHA256`). Arquivo com outro hash é recusado.
+O resultado deve ser `961AB27019BADAE6E2F952BD633E655EA1D58F708801A9A4B531CD39EB578B42`
+(valor de `PPE_MODEL_SHA256` no `.env` e no padrão do código). Arquivo com outro hash é recusado.
+O modelo tem 11 classes: `bota`, `capacete`, `colete_refletivo`, `luva`, `mangote`, `mao_sem_luva`, `mascara`, `oculos`, `protetor_headset`, `protetor_intra`, `tronco_sem_colete`; as oito usadas pelo mapeamento de EPIs
+estão todas presentes (validado em 23/10/2026).
 
 Verificação sem interface:
 
@@ -264,7 +265,7 @@ Set-Location C:\dev\metaindustria-seguranca-ia\2identify_operador
 | 1 | Operador: login por Face ID (olhe para a câmera e mova levemente a cabeça) | Boas-vindas com o nome do funcionário. Alternativa: usuário/senha do operador. |
 | 2 | Operações: selecione a operação | Detalhes, EPIs obrigatórios, área de risco e manual. |
 | 3 | "Começar trabalho" | Tela de verificação com câmera, caixas de detecção e estado de cada EPI (COLETANDO → CONFIRMADO). |
-| 4 | Todos os EPIs confirmados | A operação inicia automaticamente (ou pelo botão "Iniciar operação"). Requer `best.pt`. |
+| 4 | Todos os EPIs confirmados | A operação inicia automaticamente (ou pelo botão "Iniciar operação"). |
 | 5 | Remova um EPI / incline o tronco além de 45° / entre na área de risco | Alerta local na tela; alerta registrado na API. |
 | 6 | Admin | Banner e contador de alertas, Central de segurança atualizada, Gestão de EPIs mostra o estado em tempo real. |
 | 7 | Admin → Alertas | Confirme; depois encerre. Encerrar antes de confirmar é bloqueado. |
@@ -299,7 +300,7 @@ node --test
 |---|---|
 | API | 219 aprovados |
 | Admin | 142 aprovados |
-| Operador | 509 aprovados, 1 ignorado (`test_ppe_model.py` exige `best.pt`) |
+| Operador | 510 aprovados, 0 ignorados (23/10/2026, com o `best.pt`) |
 | Web | 10 aprovados |
 | Ruff (API, Admin, Operador) | sem apontamentos |
 
@@ -353,11 +354,12 @@ Depois repita a seção 5.
 
 Consulte a tabela completa em [README → 6.19](../README.md#619-soluções-para-erros-comuns).
 Itens mais frequentes: caminho longo demais (clone em `C:\dev`), `.env` com BOM, tokens com
-`CHANGE_ME`, porta 8000 ocupada, modelo de pose ausente no `--check` e `best.pt` ausente.
+`CHANGE_ME`, porta 8000 ocupada, modelo de pose ausente no `--check` e `best.pt` alterado (hash diferente).
 
 ## 14. O que não pôde ser validado nesta entrega
 
-- Fluxo com câmera física (Face ID, detecção de EPI, pose, área de risco): depende de hardware e do `best.pt`.
+- Fluxo com câmera física (Face ID, detecção de EPI, pose, área de risco): depende de hardware. O `best.pt`
+  foi validado apenas fora da câmera (carregamento, classes e inferência em quadros sintéticos).
 - Torre ESP32 física.
 - PoC web com login válido no navegador (validados: carregamento, CORS e rejeição de login inválido; o fluxo completo é coberto pelos testes Node).
 - PoC Supabase (exige conta cloud).

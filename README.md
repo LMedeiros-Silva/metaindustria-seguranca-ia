@@ -98,7 +98,7 @@ automatizados · 🟡 parcial · 🧪 experimental / depende de validação fís
 | Gerenciamento de EPIs | 🟡 | Catálogo inicial criado pelo `seed.py` (6 EPIs); **não há tela nem endpoint para cadastrar novos EPIs**. EPIs obrigatórios são vinculados às operações. A tela "Gestão de EPIs" mostra em tempo real o estado de cada EPI nas operações ativas. |
 | Cadastro de operações | ✅ | Nome, descrição, EPIs obrigatórios e área de risco (`/admin/operations`). |
 | Monitoramento por câmeras | ✅ / 🧪 | Câmeras USB (índice local) e IP (RTSP/HTTP) cadastradas no Admin; senha mascarada nas respostas administrativas da API; vínculo local `CAMERA_SOURCE_<id>`; várias câmeras por operação. Funcionamento com câmeras reais depende do hardware. |
-| Inteligência Artificial com YOLO | ✅ / 🧪 | Detector de EPI **YOLOv8 customizado** (11 classes, Ultralytics 8.4.115) e **YOLO11n-pose** para pose humana, ambos executados localmente em CPU. O checkpoint de EPI (`best.pt`) **não está versionado** — ver [6.12](#612-modelos-de-ia). |
+| Inteligência Artificial com YOLO | ✅ / 🧪 | Detector de EPI **YOLOv8 customizado** (11 classes, Ultralytics 8.4.115) e **YOLO11n-pose** para pose humana, ambos executados localmente em CPU. O checkpoint de EPI retreinado (`best.pt`) está versionado neste repositório — ver [6.12](#612-modelos-de-ia). |
 | Detecção de EPIs | ✅ / 🧪 | Janela temporal de estabilização, decisão *fail-closed* (EPI ausente, inconclusivo ou sem mapeamento bloqueia), tracking por classe, capacete confirmado somente "na cabeça" (pose), fusão de evidências entre câmeras e início automático quando todos os EPIs são confirmados. Precisão em campo não foi medida nesta entrega. |
 | Postura e ergonomia | 🧪 | Triagem 2D: inclinação do tronco, braços acima dos ombros e flexão de joelhos (desligada por padrão). Também há triagem de **possível queda**. Limiares precisam de validação por responsável de ergonomia; não é RULA/REBA. |
 | Áreas de risco | ✅ / 🧪 | No Admin, o polígono é desenhado sobre uma imagem capturada da câmera (coordenadas normalizadas, validação de auto-interseção). No Operador, a entrada é detectada quando pontos do corpo (pose) entram no polígono calibrado. |
@@ -204,7 +204,6 @@ estendida (câmeras, ESP32, PoC web, checklist) está em
 | Espaço em disco | ~3 GB para os ambientes virtuais (PyTorch é o maior) | Sim |
 | Internet | para `pip` e para baixar o modelo de pose | Sim, na instalação |
 | Webcam ou câmera IP | — | Para Face ID e monitoramento |
-| Checkpoint de EPI `best.pt` | fornecido pelo grupo | Para liberar operações (ver 6.12) |
 | Node.js | 18 ou superior | Só para os testes do PoC web |
 | ESP32 + módulo de relés | — | Opcional |
 
@@ -406,7 +405,7 @@ O login por **Face ID** não precisa dessa conta: ele usa os funcionários com r
 | Detecção facial YuNet | `2identify_operador\models\face_detection_yunet_2023mar.onnx` | **Versionado** neste repositório (MIT). |
 | Reconhecimento facial SFace | `2identify_operador\models\face_recognition_sface_2021dec.onnx` | **Versionado** (Apache 2.0). |
 | Pose YOLO11n-pose | `2identify_operador\models\pose\yolo11n-pose.pt` | Baixado pelo script do projeto (verifica SHA-256). |
-| Detector de EPI (YOLOv8 customizado) | `2identify_operador\models\ppe\best.pt` | **Não versionado.** Solicite o arquivo ao grupo. |
+| Detector de EPI (YOLOv8 customizado, versão retreinada) | `2identify_operador\models\ppe\best.pt` | **Versionado** neste repositório (AGPL-3.0 declarada no checkpoint). |
 
 ```powershell
 Set-Location C:\dev\metaindustria-seguranca-ia\2identify_operador
@@ -414,19 +413,19 @@ Set-Location C:\dev\metaindustria-seguranca-ia\2identify_operador
 .\.venv\Scripts\python.exe scripts\download_pose_model.py
 ```
 
-Após receber o `best.pt`, copie-o para `2identify_operador\models\ppe\best.pt` e confira o hash
-(precisa ser igual a `PPE_MODEL_SHA256` do `.env`,
-`2EBD001C8AB294D27C184BD78C48236C019BB684D9774455DF0868B4E39F011F`):
+O `best.pt` já vem no clone. O Operador só carrega o arquivo se o SHA-256 for igual a
+`PPE_MODEL_SHA256` (no `.env` e no padrão do código), que nesta cópia é
+`961AB27019BADAE6E2F952BD633E655EA1D58F708801A9A4B531CD39EB578B42`. Para conferir:
 
 ```powershell
-New-Item -ItemType Directory -Force .\models\ppe | Out-Null
 (Get-FileHash .\models\ppe\best.pt -Algorithm SHA256).Hash
 ```
 
-> **Sem o `best.pt`** a aplicação inicia normalmente, mas a verificação de EPIs não conclui e a
-> operação **não é liberada** (comportamento *fail-closed* do projeto). Login, cadastros, câmeras,
-> pose e todos os fluxos do Admin continuam disponíveis. O checkpoint declara licença AGPL-3.0
-> (ver `2identify_operador/THIRD_PARTY_NOTICES.md`).
+> Este checkpoint é a **versão retreinada** escolhida pelo grupo; o repositório de origem ainda
+> referencia o hash da versão anterior (ver [Diferenças em relação à origem](#diferenças-em-relação-à-origem)).
+> Se o arquivo faltar ou tiver outro hash, a aplicação inicia, mas a verificação de EPIs não
+> conclui e a operação **não é liberada** (comportamento *fail-closed*). O checkpoint declara
+> licença AGPL-3.0 (ver `2identify_operador/THIRD_PARTY_NOTICES.md`).
 
 Valide a configuração do Operador sem abrir a interface (retorna código 0 quando está tudo certo):
 
@@ -491,7 +490,7 @@ Set-Location C:\dev\metaindustria-seguranca-ia\2identify_operador
 3. **Admin → Funcionários:** selecione um funcionário e use **Capturar Face ID** (capturas frontal, esquerda e direita com a câmera do computador do Admin).
 4. **Operador:** faça login por Face ID (ou com a conta de operador do passo 6.11).
 5. **Operador → Operações:** selecione a operação e clique em **Começar trabalho**. A verificação de
-   segurança mostra o estado de cada EPI; com todos confirmados, a operação inicia (requer `best.pt`).
+   segurança mostra o estado de cada EPI; com todos confirmados, a operação inicia.
 6. **Operação ativa:** retire um EPI, incline o tronco ou entre na área de risco. O alerta aparece
    no Operador e chega ao Admin em tempo real (banner, contador e **Alertas**).
 7. **Admin → Alertas:** confirme e depois encerre a ocorrência. **Relatórios** exporta o histórico em Excel.
@@ -519,9 +518,10 @@ Set-Location C:\dev\metaindustria-seguranca-ia\2identify_web
 node --test
 ```
 
-Resultado da validação desta entrega (22/10/2026): API **219 aprovados**; Admin **142 aprovados**;
-Operador **509 aprovados e 1 ignorado** (o teste do checkpoint `best.pt` é ignorado quando o arquivo
-não está instalado); Web **10 aprovados**. `ruff check .` sem apontamentos nos três módulos Python.
+Resultado da validação desta entrega: API **219 aprovados** e Admin **142 aprovados** (22/10/2026);
+Operador **510 aprovados, 0 ignorados** (23/10/2026, já com o `best.pt` — o teste do checkpoint
+carrega o modelo e confere as 11 classes); Web **10 aprovados**. `ruff check .` sem apontamentos nos
+três módulos Python.
 
 ### 6.19 Soluções para erros comuns
 
@@ -537,7 +537,7 @@ não está instalado); Web **10 aprovados**. `ruff check .` sem apontamentos nos
 | Uvicorn não abre a porta 8000 (`[Errno 10048]`) | Outro processo usa a porta. Encerre-o; o Operador e o PoC web esperam a API na porta 8000. |
 | Admin mostra erro de conexão | A API não está rodando ou `API_URL` está diferente de `http://127.0.0.1:8000`. |
 | `main.py --check` retorna 1 com `pose_model_artifact_missing` | Rode `scripts\download_pose_model.py`. |
-| Verificação de EPI nunca libera | `best.pt` ausente, hash diferente de `PPE_MODEL_SHA256` ou EPI sem classe correspondente no modelo. |
+| Verificação de EPI nunca libera | `best.pt` ausente ou alterado (hash diferente de `PPE_MODEL_SHA256`), mais de uma pessoa na imagem, ou EPI sem classe correspondente no modelo. |
 | Face ID: "Estação não autorizada na API: verifique OPERATOR_STATION_TOKEN." | `OPERATOR_STATION_TOKEN` diferente entre API e Operador, ou vazio. Reinicie a API e o Operador após corrigir. |
 | Face ID: "Rosto não reconhecido ou funcionário não autorizado." | Rosto não cadastrado no Admin, funcionário inativo, iluminação ruim ou mais de um rosto na imagem. |
 | Câmera não abre | Índice USB incorreto (use `probe_usb_cameras.py`), câmera em uso por outro programa ou URL RTSP inacessível. |
@@ -551,7 +551,7 @@ não está instalado); Web **10 aprovados**. `ruff check .` sem apontamentos nos
 | Sprint 1 | Definição do problema e requisitos | Problema, proposta, 10 requisitos funcionais e 7 não funcionais, personas, restrições, tecnologias e justificativas. |
 | Sprint 2 | Protótipo e arquitetura | Diagramas UML (casos de uso, atividades e classes) e protótipo no Figma (telas da Sprint 2 mantidas no Figma). |
 | Sprint 3 | Interfaces, Scrum e documentação | Evolução do protótipo (fluxos Admin e Operador navegáveis), Product/Sprint Backlog no Trello, cerimônias Scrum e arquitetura técnica refinada. |
-| Sprint 4 | Aplicação final e validação | Código do 2Identify (API, Admin, Operador, IA, ESP32, PoC web), instalação validada do zero, 880 testes automatizados executados e documentação final. |
+| Sprint 4 | Aplicação final e validação | Código do 2Identify (API, Admin, Operador, IA, ESP32, PoC web), instalação validada do zero, 881 testes automatizados aprovados, checkpoint de EPI retreinado, vídeo e documentação final. |
 
 Comparação detalhada, inclusive requisitos atendidos: [docs/evolucao-sprints.md](docs/evolucao-sprints.md).
 
@@ -592,7 +592,15 @@ Comparação detalhada, inclusive requisitos atendidos: [docs/evolucao-sprints.m
   recuperação/apresentação de 16–17/09/2026 da pasta `docs/` da origem, que descrevem a máquina de um
   integrante (caminhos locais, backup do banco, estado do Git naquele dia).
 - Os READMEs internos da API, do Admin e do Operador receberam correções de trechos desatualizados,
-  identificadas no início de cada um. Nenhum código-fonte foi alterado.
+  identificadas no início de cada um.
+- **Checkpoint de EPI (23/10/2026):** a cópia acadêmica versiona o `best.pt` **retreinado** escolhido
+  pelo grupo (SHA-256 `961AB27019BADAE6E2F952BD633E655EA1D58F708801A9A4B531CD39EB578B42`, 6.254.698 bytes), ausente na origem.
+  Para que ele seja aceito, `PPE_MODEL_SHA256` foi atualizado em `2identify_operador/.env.example`
+  **e** no valor padrão de `2identify_operador/app/core/config.py` (única alteração de código-fonte
+  em relação à origem, que ainda referencia `2EBD001C…F011F`). Também foram ajustados o `.gitignore`
+  raiz e o do Operador (exceção para `models/ppe/best.pt`), o `.gitattributes` do Operador
+  (`*.pt binary`) e o `THIRD_PARTY_NOTICES.md`. O modelo foi validado: carrega pelo adaptador do
+  projeto, expõe as 11 classes esperadas (`bota`, `capacete`, `colete_refletivo`, `luva`, `mangote`, `mao_sem_luva`, `mascara`, `oculos`, `protetor_headset`, `protetor_intra`, `tronco_sem_colete`) e cobre todas as classes do mapeamento de EPIs.
 
 ---
 
@@ -604,7 +612,7 @@ Comparação detalhada, inclusive requisitos atendidos: [docs/evolucao-sprints.m
 | Trello | <https://trello.com/b/hlOQ2wC8> |
 | Figma | [Protótipo SafeVision — Figma](https://www.figma.com/design/1jOYFBKYzRu1shWKXjoNmk/Sem-t%C3%ADtulo?node-id=0-1&t=j9OCNoC0o5MRH8zr-1) |
 | Código de origem (2Identify) | <https://github.com/LMedeiros-Silva/2identify/tree/redesign/fase2-design-system> |
-| Vídeo de apresentação — Sprint 4 | **Pendente** — link a ser adicionado pelo grupo. |
+| Vídeo de apresentação — Sprint 4 | <https://youtu.be/2VN0RzsWvMM> |
 
 ---
 
@@ -617,11 +625,11 @@ Marcado somente o que foi realizado e verificado nesta entrega.
 - [x] README principal atualizado para a Sprint 4
 - [x] Arquitetura final, manual de execução, evolução das Sprints e estrutura da Review documentados
 - [x] Instalação validada em ambiente limpo: dependências, `.env`, migrações do zero e `seed.py`
-- [x] Testes automatizados executados: 880 aprovados, 1 ignorado (checkpoint ausente), 0 falhas
+- [x] Testes automatizados executados: 881 aprovados, 0 ignorados, 0 falhas
 - [x] API iniciada com PostgreSQL; fluxo REST validado (login, câmera, área de risco, operação, alerta idempotente, confirmação e encerramento) e WebSocket do Admin
 - [x] Admin e Operador iniciados no ambiente de validação; `main.py --check` do Operador aprovado
-- [ ] Vídeo de apresentação da Sprint 4 publicado e link adicionado
-- [ ] Checkpoint de EPI (`best.pt`) disponibilizado aos avaliadores
+- [x] Vídeo de apresentação da Sprint 4 publicado e link adicionado
+- [x] Checkpoint de EPI retreinado (`best.pt`) versionado e carregado com as classes esperadas
 - [ ] Teste físico com câmera real (Face ID, EPI, pose, área de risco) registrado como evidência
 - [ ] Teste físico da torre ESP32 registrado como evidência
 - [ ] Sprint Review final realizada e registrada em [docs/review-final.md](docs/review-final.md)

@@ -206,7 +206,7 @@ independente de `LOGIN_CAMERA_SOURCE` e dos parâmetros da câmera de autentica�
 de entrada, cadência e dispositivo são configurados por `PPE_CONFIDENCE_THRESHOLD`,
 `PPE_IOU_THRESHOLD`, `PPE_INFERENCE_IMAGE_SIZE`, `PPE_INFERENCE_FPS` e
 `PPE_INFERENCE_DEVICE`. O checkpoint fornecido usa Ultralytics YOLOv8 8.4.115 e expõe 11 classes.
-O modelo é um artefato local ignorado pelo Git. Configurações auxiliares da biblioteca ficam em
+O modelo é um artefato ignorado pelo Git no repositório de origem (versionado nesta cópia acadêmica). Configurações auxiliares da biblioteca ficam em
 `ULTRALYTICS_CONFIG_DIRECTORY`; o adaptador utiliza o checkpoint em modo offline e não baixa pesos
 implicitamente. Antes da desserialização, o arquivo precisa corresponder a `PPE_MODEL_SHA256`.
 
@@ -265,5 +265,7 @@ As origens e licenças dos modelos estão registradas em
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 Nesta versão, os dois modelos faciais (YuNet e SFace) **são versionados** em `models/` (exceção
 explícita no `.gitignore`); `scripts/download_face_models.py` apenas confere ou recupera esses
-arquivos. O checkpoint de EPI `models/ppe/best.pt` continua fora do Git e deve ser fornecido à
-parte; sem ele, a verificação de EPIs não libera a operação.
+arquivos. Nesta cópia acadêmica, o checkpoint de EPI retreinado `models/ppe/best.pt` também é
+versionado, e `PPE_MODEL_SHA256` (no `.env.example` e no padrão de `app/core/config.py`) foi
+atualizado para o hash dele; sem um arquivo com esse hash, a verificação de EPIs não libera a
+operação.

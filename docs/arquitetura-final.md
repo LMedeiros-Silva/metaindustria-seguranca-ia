@@ -177,7 +177,7 @@ A criação do esquema do zero foi **validada** nesta entrega (PostgreSQL 18.6).
 | Etapa | Implementação |
 |---|---|
 | Face ID | YuNet detecta um único rosto; prova de vida temporal (movimento mínimo por tempo mínimo); SFace gera embeddings de quadros consecutivos; a API decide por similaridade de cosseno com limiar (0,50) e margem de ambiguidade (0,05). |
-| EPI | YOLOv8 customizado (`best.pt`, 11 classes) a ~4 FPS em CPU; verificação de integridade por SHA-256 antes de carregar; janela de 8 quadros (mín. 5) com limiares 75 %/25 %; tracking por classe na operação ativa. |
+| EPI | YOLOv8 customizado retreinado (`best.pt`, 11 classes; ~35 ms por quadro 1280×720 em CPU na validação) a ~4 FPS; verificação de integridade por SHA-256 antes de carregar; janela de 8 quadros (mín. 5) com limiares 75 %/25 %; tracking por classe na operação ativa. |
 | Sujeito da verificação | A liberação considera exatamente uma pessoa observada de forma confiável. |
 | Capacete | Confirmado somente quando a pose indica o capacete na cabeça (`NA_CABECA`); na mão bloqueia. |
 | Multicâmera | Cada câmera estabiliza suas evidências; a fusão nunca deixa uma câmera inconclusiva votar contra. |
@@ -207,7 +207,8 @@ A criação do esquema do zero foi **validada** nesta entrega (PostgreSQL 18.6).
 
 ## 11. Limitações reais da implementação
 
-- O checkpoint de EPI `best.pt` não está no repositório; sem ele a operação não é liberada.
+- O checkpoint de EPI retreinado (`best.pt`) foi validado quanto a carregamento e classes, mas sua
+  precisão em campo não foi medida; sem um arquivo com o hash configurado a operação não é liberada.
 - Brokers em memória: um único processo da API; sem durabilidade nem replay de eventos.
 - Sem outbox durável no Operador: alerta pendente se perde se o processo encerrar durante falha prolongada de rede.
 - Sem HTTPS nem limitação de tentativas de login na API; uso previsto apenas em `localhost` ou rede confiável.

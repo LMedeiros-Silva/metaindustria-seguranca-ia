@@ -40,7 +40,7 @@ Marque durante a Review. "Validado na preparação" indica o que já foi executa
 | Cadastro de Face ID no Admin | Não (exige câmera) | [ ] | |
 | Login do Operador por senha | Sim (HTTP) | [ ] | |
 | Login do Operador por Face ID | Não (exige câmera) | [ ] | |
-| Verificação de EPIs e liberação da operação | Não (exige câmera e `best.pt`) | [ ] | |
+| Verificação de EPIs e liberação da operação | Não (exige câmera); modelo carregado e classes conferidas | [ ] | |
 | Alerta de ergonomia / área de risco / queda | Não (exige câmera) | [ ] | |
 | Alerta chegando ao Admin em tempo real | Parcial (WebSocket conectado; alerta via HTTP) | [ ] | |
 | Confirmação e encerramento de alerta | Sim (HTTP) | [ ] | |
@@ -59,7 +59,7 @@ validação, Node.js 24.19.0. Cópia do código idêntica à origem (490 arquivo
 |---|---|---|
 | `2identify_api` | `python -m pytest` | 219 aprovados |
 | `2identify_admin` | `python -m pytest` (Qt offscreen) | 142 aprovados |
-| `2identify_operador` | `python -m pytest` (Qt offscreen) | 509 aprovados, 1 ignorado (checkpoint `best.pt` ausente) |
+| `2identify_operador` | `python -m pytest` (Qt offscreen) | 510 aprovados, 0 ignorados (23/10/2026, com o `best.pt`) |
 | `2identify_web` | `node --test` | 10 aprovados |
 | Lint | `python -m ruff check .` nos três módulos Python | sem apontamentos |
 | Dependências | `python -m pip check` nos três módulos | sem conflitos |
@@ -79,18 +79,19 @@ validação, Node.js 24.19.0. Cópia do código idêntica à origem (490 arquivo
 | Encerrar alerta antes de confirmar / confirmar / encerrar | 409 / 200 / 200 |
 | `WS /ws/admin/alerts` com token / sem token | `connection.ready` / HTTP 401 |
 | Admin `python main.py` | interface iniciada e mantida em execução |
-| Operador `python main.py --check` | código 0 (após instalar o modelo de pose) |
+| Operador `python main.py --check` | código 0 (após instalar o modelo de pose); `ppe_model_available: true` |
+| Checkpoint de EPI retreinado | SHA-256 `961AB270…8B42`; carregado pelo adaptador do projeto; 11 classes; todas as classes do mapeamento presentes; ~35 ms/quadro 1280×720 em CPU |
 | Operador `python main.py` | interface iniciada (`operator_ui_started`) |
 
 ### 4.3 Não executado
 
-- Testes com câmera física, `best.pt`, ESP32 e Supabase.
+- Testes com câmera física, ESP32 e Supabase (o `best.pt` foi testado apenas com quadros sintéticos).
 - Medições de precisão dos modelos e de latência.
 
 ## 5. Pendências e limitações
 
-- Disponibilizar o checkpoint de EPI `best.pt` (não versionado; licença AGPL-3.0 declarada).
-- Gravar e publicar o vídeo de apresentação da Sprint 4 e adicionar o link ao README.
+- Vídeo da Sprint 4 publicado: <https://youtu.be/2VN0RzsWvMM>.
+- Checkpoint de EPI retreinado versionado em `2identify_operador/models/ppe/best.pt` (licença AGPL-3.0 declarada; uso comercial exige revisão).
 - Registrar evidências do teste físico (câmera, Face ID, EPI, pose, área de risco, ESP32).
 - Limitações técnicas: brokers em memória (um worker), sem outbox durável, sem HTTPS/rate limiting,
   prova de vida *baseline*, triagem ergonômica não validada por especialista, sem cadastro de EPIs,

@@ -52,8 +52,8 @@ cita as "telas desenvolvidas na Sprint 2" mantidas no Figma.
   `2identify_operador` (com firmware ESP32) e `2identify_web`.
 - Integração ponta a ponta pela API: REST para cadastros, autenticação, operações e alertas;
   WebSocket para o Admin e para a torre ESP32.
-- Validação: instalação do zero (dependências, migrações, seed), 880 testes automatizados
-  aprovados (1 ignorado por falta do checkpoint), smoke test HTTP/WebSocket com PostgreSQL real
+- Validação: instalação do zero (dependências, migrações, seed), 881 testes automatizados
+  aprovados (inclusive o do checkpoint de EPI retreinado), smoke test HTTP/WebSocket com PostgreSQL real
   e inicialização dos três aplicativos — ver [review-final.md](review-final.md).
 - Documentação: [README](../README.md), [arquitetura final](arquitetura-final.md) e
   [manual de execução](manual-execucao.md).
@@ -81,8 +81,8 @@ Legenda: ✅ atendido · 🟡 parcial · 🧪 implementado, sem validação fís
 | RF01 | Cadastro de usuários | 🟡 | Funcionários cadastrados no Admin; contas `admin` e de operador criadas por `seed.py`/script, sem tela própria. |
 | RF02 | Login de usuários autorizados | ✅ | `/auth/admin/login`, `/auth/login`, `/auth/face`; testes da API. |
 | RF03 | Áreas de risco desenhadas na imagem | ✅ | Editor de polígono no Admin; `POST /admin/risk-areas` validado no smoke test. |
-| RF04 | Detectar EPIs em tempo real | 🧪 | Pipeline YOLO implementado e testado com dados sintéticos; requer `best.pt`. |
-| RF05 | Ausência de capacete, bota ou mangote | 🧪 | Mapeamento para as classes `capacete`, `bota` e `mangote`; as classes efetivas dependem do checkpoint, não disponível nesta validação. |
+| RF04 | Detectar EPIs em tempo real | 🧪 | Pipeline YOLO implementado; checkpoint retreinado versionado, carregado e executado em quadros sintéticos (~35 ms/quadro em CPU); sem teste com câmera. |
+| RF05 | Ausência de capacete, bota ou mangote | 🧪 | O checkpoint possui as classes `capacete`, `bota` e `mangote`, mapeadas aos EPIs do seed; a ausência bloqueia a liberação (fail-closed). Sem teste com câmera. |
 | RF06 | Postura ergonômica inadequada | 🧪 | `ErgonomicsEngine` e worker de pose; limiares a validar por especialista. |
 | RF07 | Entrada em área de risco | 🧪 | `RiskAreaPoseEngine` integrado ao monitoramento ativo. |
 | RF08 | Alerta visual | ✅ | Alertas no Operador, banner/contador no Admin, torre ESP32. |
