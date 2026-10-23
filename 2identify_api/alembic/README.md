@@ -13,10 +13,13 @@ Na etapa de ingestão e tratamento administrativo de alertas:
 - o `autogenerate` permanece bloqueado, pois a API ainda não possui metadados completos;
 - a mesma revisão existe no Admin e na API para manter uma única linhagem.
 
-Depois de backup e conferência da conexão, aplique uma única vez, a partir do Admin ou da API:
+> Nota da cópia acadêmica (Sprint 4): as revisões `f1b2c3d4e5f6` e `a3c5e7f9b1d2` existem somente
+> nesta pasta da API; aplique as migrações a partir da API.
+
+Depois de backup e conferência da conexão, aplique uma única vez, a partir da API:
 
 ```powershell
 python -m alembic upgrade head
 ```
 
-Não execute o upgrade nas duas pastas: ambas apontam para a mesma revisão e o mesmo banco.
+Não execute o upgrade nas duas pastas: ambas usam a mesma tabela `alembic_version` e o mesmo banco.

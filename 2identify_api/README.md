@@ -1,5 +1,7 @@
 # 2Identify API
 
+> **Cópia acadêmica (Sprint 4 — SafeVision Metaindústria).** Este arquivo foi copiado do repositório 2Identify (branch `redesign/fase2-design-system`) e teve trechos desatualizados corrigidos apenas nesta cópia: tokens que precisam ser trocados antes de iniciar, endpoint de Face ID, uso do endpoint de operações pelo Operador, origem das migrações e próxima etapa. O passo a passo completo e validado de instalação no Windows está no [README principal](../README.md#6-instalação-e-execução-no-windows).
+
 Backend independente do 2Identify, iniciado na etapa 33. A API usa FastAPI, SQLAlchemy 2.x
 síncrono e PostgreSQL. Também fornece autenticação isolada, dashboard administrativo, ingestão
 idempotente de alertas do Operador e canal WebSocket autenticado para o Admin.
@@ -64,6 +66,8 @@ python -m scripts.ensure_operator_catalog_token
 ```
 
 O comando preserva um segredo já válido e só cria/substitui valores ausentes ou placeholders.
+
+Os demais tokens do `.env.example` (`OPERATOR_STATION_TOKEN` e `SAFETY_DEVICE_TOKEN`) não têm script: a API **não inicia** enquanto eles começarem com `CHANGE_ME`. Gere um valor com `python -c "import secrets; print(secrets.token_urlsafe(48))"` e copie-o para o `.env` (o `OPERATOR_STATION_TOKEN` deve ser igual no `.env` do Operador), ou deixe a linha vazia (`SAFETY_DEVICE_TOKEN=`) quando o recurso não for usado. Edite o `.env` com um editor que salve UTF-8 sem BOM (o Bloco de Notas do Windows 10/11 serve); um BOM faz a primeira variável deixar de ser lida.
 Em produção, distribua segredos diferentes por instalação através de um cofre ou mecanismo
 seguro de provisionamento.
 
@@ -101,6 +105,10 @@ Usuário inexistente, senha incorreta, senha acima do limite seguro do bcrypt, c
 perfil não permitido recebem a mesma resposta HTTP 401. Falhas do PostgreSQL recebem HTTP 503
 sem detalhes internos. Todas as respostas de autenticação usam `Cache-Control: no-store`, e os
 erros de validação nunca refletem os valores recebidos.
+
+## Face ID do Operador
+
+`POST /auth/face` recebe o identificador do modelo e embeddings SFace de quadros consecutivos, autenticado pelo bearer `OPERATOR_STATION_TOKEN` da estação (que identifica a estação, nunca a pessoa). A API compara com os templates cadastrados pelo Admin em `PUT /admin/employees/{id}/face-template` e emite a sessão do funcionário somente quando todos os quadros apontam para o mesmo funcionário acima do limiar (`FACE_AUTH_SIMILARITY_THRESHOLD`) e com margem sobre os demais (`FACE_AUTH_AMBIGUITY_MARGIN`).
 
 Por padrão e por contrato, `/auth/login` aceita somente `operador`. Não adicione
 `administrador` a `AUTH_ALLOWED_PROFILES`: o Admin possui o endpoint e o audience JWT
@@ -201,8 +209,8 @@ auto-interseção. Operações exigem uma área ativa e ao menos um EPI ativo.
 
 O Operador possui somente leitura em `GET /operator/operations`; a resposta usa
 o mesmo polígono persistido para permitir a projeção sobre qualquer resolução de
-câmera. A troca do provider mock do desktop Operador por esse endpoint permanece
-como uma etapa separada.
+câmera. O desktop Operador já consome esse endpoint quando `OPERATIONS_MOCK_ENABLED=false`
+(padrão).
 
 Instalações confiáveis do desktop também podem consultar somente esse catálogo em
 `GET /operator/operations/catalog`, usando o bearer configurado em
@@ -237,12 +245,13 @@ alterar os dados reais.
 
 ## Alembic
 
-A pasta `alembic/versions` contém cópias idênticas das revisões do Admin. Depois de backup,
-aplique uma única vez `python -m alembic upgrade head` a partir da API ou do Admin.
+A pasta `alembic/versions` contém as revisões do Admin e duas revisões posteriores que existem
+somente na API (`f1b2c3d4e5f6`, templates faciais, e `a3c5e7f9b1d2`, resolução física de alertas).
+Depois de backup, aplique `python -m alembic upgrade head` **a partir da API** (head: `a3c5e7f9b1d2`).
+A migração `f1b2c3d4e5f6` concede permissões ao role `identify_user`, que precisa existir.
 O autogenerate continua bloqueado. Consulte `alembic/README.md`.
 
 ## Próxima etapa
 
-A fila offline/outbox durável do Operator permanece fora desta entrega. O endpoint
-de operações já está disponível; o desktop Operador ainda usa o provider mock até
-a etapa de integração. Face ID continua local somente em desenvolvimento/testes.
+A fila offline/outbox durável do Operator permanece fora desta entrega. O Operador já usa o
+endpoint de operações e o Face ID é decidido pela API (`POST /auth/face`).

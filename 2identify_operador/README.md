@@ -1,5 +1,7 @@
 # 2Identify Operator
 
+> **Cópia acadêmica (Sprint 4 — SafeVision Metaindústria).** Este arquivo foi copiado do repositório 2Identify (branch `redesign/fase2-design-system`) e teve trechos desatualizados corrigidos apenas nesta cópia: estado da área de risco, da detecção de queda e do Face ID, caminho do checkpoint e versionamento dos modelos faciais. O passo a passo completo e validado de instalação no Windows está no [README principal](../README.md#6-instalação-e-execução-no-windows).
+
 Aplicação desktop do ecossistema 2Identify responsável pelo monitoramento industrial,
 captura de vídeo, inferência local, regras de segurança e envio autenticado de alertas à API.
 
@@ -76,13 +78,12 @@ O projeto contém a fundação inicial e o fluxo biométrico até a criação da
 - contratos desacoplados para futura autorização e cadastro pela API;
 - testes unitários da infraestrutura já implementada.
 
-Tracking de pessoas e avaliação de entrada na área de risco ainda não foram implementados. O tracker
-atual identifica objetos das classes de EPI do checkpoint; ele não afirma identificar uma pessoa.
-Sem um detector de pessoa, a geometria é exibida, mas não produz uma falsa decisão de invasão. A
-sessão existe somente em memória. Alertas levantados durante login por credenciais são enviados à
-API; o Face ID local de desenvolvimento não possui token remoto e mantém o alerta somente local.
-Em desenvolvimento, o Face ID pode reconhecer operadores cadastrados localmente. Em produção,
-essa autorização local é bloqueada e deverá ser substituída pela API.
+Atualização (estado do código copiado): a entrada na área de risco é avaliada durante a operação
+ativa a partir dos keypoints da pose (`RiskAreaPoseEngine`), somente quando a geometria está
+calibrada para a câmera; a pose também alimenta a triagem de possível queda (`FallDetectionEngine`,
+variáveis `FALL_*` com padrões no código). O tracker de EPI continua identificando objetos, não
+pessoas. O Face ID é decidido pela API (`POST /auth/face`, seção *Face ID pela API*), que emite uma
+sessão com token; alertas dessa sessão também são enviados à API. A sessão existe somente em memória.
 
 ## Requisitos
 
@@ -179,7 +180,7 @@ python -m mypy app main.py
 
 As configurações locais ficam no arquivo `.env`, que é ignorado pelo Git. O arquivo
 `.env.example` documenta todas as variáveis suportadas atualmente. Caminhos relativos,
-como `models/best.pt`, são resolvidos a partir da raiz do projeto, independentemente da
+como `models/ppe/best.pt`, são resolvidos a partir da raiz do projeto, independentemente da
 pasta usada para iniciar o processo.
 
 Por padrão, `OPERATIONS_MOCK_ENABLED=false` carrega pela `2identify_api` as operações ativas
@@ -262,3 +263,7 @@ para o fluxo seguro de autenticação facial.
 
 As origens e licenças dos modelos estão registradas em
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Nesta versão, os dois modelos faciais (YuNet e SFace) **são versionados** em `models/` (exceção
+explícita no `.gitignore`); `scripts/download_face_models.py` apenas confere ou recupera esses
+arquivos. O checkpoint de EPI `models/ppe/best.pt` continua fora do Git e deve ser fornecido à
+parte; sem ele, a verificação de EPIs não libera a operação.

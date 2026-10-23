@@ -1,26 +1,37 @@
 # 2Identify Admin
 
+> **Cópia acadêmica (Sprint 4 — SafeVision Metaindústria).** Este arquivo foi copiado do repositório 2Identify (branch `redesign/fase2-design-system`) e teve trechos desatualizados corrigidos apenas nesta cópia: versão do Python, rotas consumidas, criação do banco/seed, migrações e estado do canal em tempo real. O passo a passo completo e validado de instalação no Windows está no [README principal](../README.md#6-instalação-e-execução-no-windows).
+
 Cliente desktop PySide6 para administração do 2Identify. A partir da Etapa 35,
 o login e o dashboard usam exclusivamente a API HTTP. Esses dois fluxos não
 abrem conexão PostgreSQL e não possuem fallback local.
 
 ## Preparação
 
-1. Crie e ative uma virtualenv com Python 3.11 ou superior.
-2. Instale as dependências com `python -m pip install -r requirements.txt`.
+1. Crie uma virtualenv com Python 3.12 64 bits (o projeto aceita 3.11+, mas a API exige 3.12):
+   `py -3.12 -m venv .venv`.
+2. Instale as dependências com `.\.venv\Scripts\python.exe -m pip install -r requirements.txt`
+   (para os testes: `pip install "pytest==8.4.2" "ruff==0.16.3"`).
 3. Copie `.env.example` para `.env` e ajuste `API_URL` para o endereço da API.
 4. Inicie a API antes do desktop.
-5. Execute `python main.py`.
+5. Execute `.\.venv\Scripts\python.exe main.py`.
+
+Em um banco novo, as tabelas são criadas pelas migrações da API e o usuário `admin` (com setores,
+EPIs e funcionários de demonstração) pelo `seed.py` deste projeto — ver *Seed legado* abaixo.
 
 Rotas consumidas:
 
 - `POST /auth/admin/login`
 - `GET /admin/me`
 - `GET /admin/dashboard/summary`
+- `GET /admin/active-operations`
+- `GET /admin/alerts`, `GET /admin/alerts/{id}`, `PATCH /admin/alerts/{id}/confirm|close`
+- `GET|POST|PUT /admin/employees`, `GET|PUT /admin/employees/{id}/face-template`
 - `GET /admin/operations/catalog`
-- `POST /admin/cameras`
+- `GET|POST|PUT /admin/cameras`, `GET /admin/cameras/{id}/stream-source`
 - `GET|POST|PUT /admin/operations`
 - `GET|POST|PUT /admin/risk-areas`
+- `WS /ws/admin/alerts`
 
 O token JWT permanece somente em memória, não é escrito em arquivo ou log e é
 descartado no logout, na expiração da sessão e no encerramento da aplicação.
@@ -75,8 +86,9 @@ As opções do desktop são tipadas em `app/core/config.py`:
 - `LOG_DIRECTORY` (opcional)
 
 `DATABASE_URL` continua disponível somente para Alembic, seed e outras
-ferramentas legadas. Alterações de schema continuam sendo feitas pelos comandos
-de migração existentes; o desktop não executa migration automaticamente.
+ferramentas legadas. A pasta `alembic` deste projeto não contém as duas revisões
+mais recentes; aplique as migrações a partir de `2identify_api`. O desktop não
+executa migration automaticamente.
 
 ## Seed legado
 
@@ -107,8 +119,9 @@ O cliente aceita exclusivamente envelopes v1 limitados a 64 KiB para
 alimentam uma lista efêmera e um banner e solicitam, com debounce, uma nova
 leitura HTTP do dashboard. Os cards nunca são incrementados localmente.
 
-O estado “Conectado — aguardando integração de alertas” é intencional: nesta
-etapa ainda não existe produtor real de `alert.created`. O broker é em memória;
+O Operador produz `alert.created` ao enviar alertas para `POST /operator/alerts`;
+a mensagem “Conectado — aguardando integração de alertas” aparece apenas quando a
+API informa um estado diferente de `ready` na conexão. O broker é em memória;
 não há replay, durabilidade, garantia entre múltiplos workers nem recuperação
 de mensagens após reinício. Essas garantias pertencem à etapa de outbox
 durável e não são simuladas pelo desktop.
