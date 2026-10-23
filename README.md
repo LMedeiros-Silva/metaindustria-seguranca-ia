@@ -635,6 +635,6 @@ Marcado somente o que foi realizado e verificado nesta entrega.
   queda são apenas explicadas no vídeo, sem demonstração ao vivo
 - [x] Torre de sinalização ESP32 física apresentada no [vídeo](https://youtu.be/2VN0RzsWvMM) (2:49, estrutura montada e
   comportamento explicado); o acionamento das cores ao vivo não aparece na gravação
-- [ ] Sprint Review final realizada e registrada em [docs/review-final.md](docs/review-final.md)
-- [ ] Board do Trello atualizado para a Sprint 4 (em 23/10/2026 o board foi renomeado para "Sprint 4",
-  mas ainda não tem cards das entregas da Sprint 4)
+- [x] Board do Trello atualizado com o Sprint Backlog da Sprint 4 (listas "Sprint Backlog — Sprint 4" e
+  "Concluído — Sprint 4"; o histórico da Sprint 3 foi preservado nas listas "— Sprint 3")
+- [ ] Sprint Review final realizada, com a ata registrada no Trello e em [docs/review-final.md](docs/review-final.md)
