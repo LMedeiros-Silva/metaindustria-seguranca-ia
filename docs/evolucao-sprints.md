@@ -57,6 +57,9 @@ cita as "telas desenvolvidas na Sprint 2" mantidas no Figma.
   e inicialização dos três aplicativos — ver [review-final.md](review-final.md).
 - Documentação: [README](../README.md), [arquitetura final](arquitetura-final.md) e
   [manual de execução](manual-execucao.md).
+- Scrum: Sprint Planning, responsabilidades por área, Sprint Backlog com 13 itens no Trello,
+  Definition of Done mantida da Sprint 3 e ata da Review — ver [cerimonias-sprint4.md](cerimonias-sprint4.md)
+  e [review-final.md](review-final.md). Não há registros de Dailies da Sprint 4.
 
 ## Comparação: o que foi planejado × o que foi implementado
 

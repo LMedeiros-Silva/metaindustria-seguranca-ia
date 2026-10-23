@@ -76,7 +76,7 @@ ocorrências.
 |---|---|---|
 | Leonardo Medeiros | 559220 | Software: Admin, Operador, API, PostgreSQL e integração |
 | Arthur Bergamaço Alves | 556207 | Inteligência Artificial: YOLO, detecção de EPIs e ergonomia |
-| Breno Barbosa Pereira | 555348 | Design das interfaces do Admin |
+| Breno Barbosa Pereira | 555348 | Apoio ao design da aplicação administrativa |
 | Mateus de Souza Santos | 559118 | Hardware: ESP32 e torre luminosa |
 | Pietro Rodriguez | 555899 | EPIs: escolha e definição dos EPIs monitorados |
 | Renan Melo Rosembeng | 558535 | Hardware: ESP32 e torre luminosa |
@@ -564,7 +564,8 @@ Comparação detalhada, inclusive requisitos atendidos: [docs/evolucao-sprints.m
 - [Arquitetura final](docs/arquitetura-final.md)
 - [Manual de execução](docs/manual-execucao.md)
 - [Evolução das Sprints](docs/evolucao-sprints.md)
-- [Sprint Review final — estrutura](docs/review-final.md)
+- [Cerimônias Scrum — Sprint 4](docs/cerimonias-sprint4.md) (Planning, responsabilidades, Sprint Backlog, DoD, Review e Retrospectiva)
+- [Sprint Review final — ata](docs/review-final.md)
 - READMEs dos módulos: [API](2identify_api/README.md) · [Admin](2identify_admin/README.md) · [Operador](2identify_operador/README.md) · [Firmware ESP32](2identify_operador/firmware/esp32_safety_signal/README.md)
 - Documentos técnicos do 2Identify: [guia multicâmera](docs/2identify/metaindustria-multicamera-field-guide.md) · [arquitetura do Operador](2identify_operador/docs/architecture.md) · [autenticação biométrica](2identify_operador/docs/biometric-authentication.md) · [integração Admin](2identify_api/docs/admin-integration.md) · [tempo real](2identify_api/docs/admin-realtime.md) · [integração Operador](2identify_api/docs/operator-integration.md)
 
@@ -635,7 +636,13 @@ Marcado somente o que foi realizado e verificado nesta entrega.
   queda são apenas explicadas no vídeo, sem demonstração ao vivo
 - [x] Torre de sinalização ESP32 física apresentada no [vídeo](https://youtu.be/2VN0RzsWvMM) (2:49, estrutura montada e
   comportamento explicado); o acionamento das cores ao vivo não aparece na gravação
-- [x] Board do Trello atualizado com o Sprint Backlog da Sprint 4 (listas "Sprint Backlog — Sprint 4" e
-  "Concluído — Sprint 4"; o histórico da Sprint 3 foi preservado nas listas "— Sprint 3")
+- [x] Board do Trello atualizado com o Sprint Backlog da Sprint 4: 13 itens com responsáveis e descrições,
+  nas listas "Sprint Backlog — Sprint 4", "Em revisão" e "Concluído — Sprint 4" (histórico da Sprint 3
+  preservado nas listas "— Sprint 3")
+- [x] Artefatos Scrum da Sprint 4 documentados em [docs/cerimonias-sprint4.md](docs/cerimonias-sprint4.md)
+  (sem registros de Dailies; Retrospectiva pendente)
 - [x] Ata da Sprint Review final preparada no Trello e em [docs/review-final.md](docs/review-final.md)
-- [ ] Sprint Review realizada: data, feedback e aceitação formal das entregas ainda a registrar
+- [ ] Sprint Review realizada (condução: Arthur Bergamaço Alves): data, demais participantes, feedback e
+  aceitação formal das entregas ainda a registrar
+- [ ] Itens 7 (integração software, IA e hardware) e 9 (testes e validação) em revisão até haver evidência
+  do acionamento físico da torre
