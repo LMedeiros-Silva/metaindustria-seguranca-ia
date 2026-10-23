@@ -26,10 +26,10 @@ logs/
 *.backup
 *.tmp
 
-# Modelos de IA não versionados (o checkpoint de EPI é distribuído à parte)
-best.pt
+# Modelos de IA: somente o checkpoint de EPI do Operador é versionado
 best.pt.zip
 *.pt
+!2identify_operador/models/ppe/best.pt
 
 # Sistema operacional e editores
 .DS_Store

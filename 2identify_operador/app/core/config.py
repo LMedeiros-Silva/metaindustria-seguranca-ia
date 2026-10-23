@@ -50,7 +50,7 @@ class AppSettings(BaseSettings):
 
     ppe_model_path: Path = Path("models/ppe/best.pt")
     ppe_model_sha256: str = (
-        "2EBD001C8AB294D27C184BD78C48236C019BB684D9774455DF0868B4E39F011F"
+        "961AB27019BADAE6E2F952BD633E655EA1D58F708801A9A4B531CD39EB578B42"
     )
     ppe_confidence_threshold: Annotated[float, Field(gt=0, le=1)] = 0.50
     ppe_iou_threshold: Annotated[float, Field(gt=0, le=1)] = 0.45

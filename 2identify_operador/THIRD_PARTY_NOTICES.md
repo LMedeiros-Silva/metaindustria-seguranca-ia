@@ -29,17 +29,20 @@ SHA-256 checksums.
 ## Ultralytics YOLOv8 and PPE checkpoint
 
 The PPE detector uses `ultralytics-opencv-headless` 8.4.115, matching the runtime version stored
-in the provided custom YOLOv8 checkpoint. The checkpoint metadata declares `AGPL-3.0` and the
-local `models/ppe/best.pt` artifact has SHA-256:
+in the provided custom YOLOv8 checkpoint. The checkpoint metadata declares `AGPL-3.0`.
 
-`73A87F86E68F7C5091857F48B55BB756A70B88D0217CC35C58EED3969C7EBA20`
+Academic copy (Sprint 4): the retrained `models/ppe/best.pt` versioned in this repository has
+SHA-256 `961AB27019BADAE6E2F952BD633E655EA1D58F708801A9A4B531CD39EB578B42`.
+The original 2Identify notice listed
+`73A87F86E68F7C5091857F48B55BB756A70B88D0217CC35C58EED3969C7EBA20` for an earlier checkpoint.
 
 - Documentation: https://docs.ultralytics.com/
 - License guidance: https://www.ultralytics.com/license
 
 Ultralytics states that proprietary or commercial deployment requires an appropriate commercial
 license unless the complete project is distributed under the AGPL-3.0 terms. Licensing must be
-resolved before commercial distribution. The checkpoint is intentionally ignored by Git.
+resolved before commercial distribution. In the original 2Identify repository the checkpoint is
+ignored by Git; this academic copy versions it for reproducible evaluation.
 
 ## Ultralytics YOLO11n-pose
 
