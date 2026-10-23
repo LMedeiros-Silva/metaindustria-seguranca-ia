@@ -630,7 +630,11 @@ Marcado somente o que foi realizado e verificado nesta entrega.
 - [x] Admin e Operador iniciados no ambiente de validação; `main.py --check` do Operador aprovado
 - [x] Vídeo de apresentação da Sprint 4 publicado e link adicionado
 - [x] Checkpoint de EPI retreinado (`best.pt`) versionado e carregado com as classes esperadas
-- [ ] Teste físico com câmera real (Face ID, EPI, pose, área de risco) registrado como evidência
-- [ ] Teste físico da torre ESP32 registrado como evidência
+- [x] Teste físico com câmera real registrado no [vídeo](https://youtu.be/2VN0RzsWvMM): login por Face ID (1:44), verificação
+  de EPIs com capacete e colete (1:58) e alerta de ergonomia na operação ativa (2:41). Área de risco e
+  queda são apenas explicadas no vídeo, sem demonstração ao vivo
+- [x] Torre de sinalização ESP32 física apresentada no [vídeo](https://youtu.be/2VN0RzsWvMM) (2:49, estrutura montada e
+  comportamento explicado); o acionamento das cores ao vivo não aparece na gravação
 - [ ] Sprint Review final realizada e registrada em [docs/review-final.md](docs/review-final.md)
-- [ ] Board do Trello atualizado para a Sprint 4 (não verificado nesta entrega)
+- [ ] Board do Trello atualizado para a Sprint 4 (em 23/10/2026 o board foi renomeado para "Sprint 4",
+  mas ainda não tem cards das entregas da Sprint 4)

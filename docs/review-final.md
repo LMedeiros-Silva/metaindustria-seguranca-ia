@@ -39,13 +39,13 @@ Marque durante a Review. "Validado na preparação" indica o que já foi executa
 | Cadastro de câmera, área de risco e operação | Sim (HTTP) | [ ] | |
 | Cadastro de Face ID no Admin | Não (exige câmera) | [ ] | |
 | Login do Operador por senha | Sim (HTTP) | [ ] | |
-| Login do Operador por Face ID | Não (exige câmera) | [ ] | |
-| Verificação de EPIs e liberação da operação | Não (exige câmera); modelo carregado e classes conferidas | [ ] | |
-| Alerta de ergonomia / área de risco / queda | Não (exige câmera) | [ ] | |
+| Login do Operador por Face ID | Não (exige câmera) | [ ] | Gravado no vídeo da Sprint 4, 1:44 |
+| Verificação de EPIs e liberação da operação | Não (exige câmera); modelo carregado e classes conferidas | [ ] | Gravado no vídeo, 1:52–2:00 (capacete e colete) |
+| Alerta de ergonomia / área de risco / queda | Não (exige câmera) | [ ] | Ergonomia gravada no vídeo, 2:41; área de risco e queda só explicadas |
 | Alerta chegando ao Admin em tempo real | Parcial (WebSocket conectado; alerta via HTTP) | [ ] | |
 | Confirmação e encerramento de alerta | Sim (HTTP) | [ ] | |
 | Relatório Excel | Coberto por testes automatizados | [ ] | |
-| Torre ESP32 | Não (exige hardware) | [ ] | |
+| Torre ESP32 | Não (exige hardware) | [ ] | Estrutura física mostrada no vídeo, 2:49; acionamento ao vivo não gravado |
 | PoC web no celular | Parcial (página, CORS, login inválido) | [ ] | |
 
 ## 4. Evidências de testes
@@ -83,16 +83,33 @@ validação, Node.js 24.19.0. Cópia do código idêntica à origem (490 arquivo
 | Checkpoint de EPI retreinado | SHA-256 `961AB270…8B42`; carregado pelo adaptador do projeto; 11 classes; todas as classes do mapeamento presentes; ~35 ms/quadro 1280×720 em CPU |
 | Operador `python main.py` | interface iniciada (`operator_ui_started`) |
 
-### 4.3 Não executado
+### 4.3 Evidências em vídeo
 
-- Testes com câmera física, ESP32 e Supabase (o `best.pt` foi testado apenas com quadros sintéticos).
+Vídeo da Sprint 4: <https://youtu.be/2VN0RzsWvMM> (3min36s). Trechos com o sistema em execução, conferidos quadro a quadro
+em 23/10/2026:
+
+| Tempo | O que aparece |
+|---|---|
+| 1:44–1:52 | "Demonstração — Vídeo 1: entrada por Face ID": tela de login do Operador com câmera real e acesso à lista de operações |
+| 1:52–2:05 | "Demonstração — Vídeo 2: verificação dos EPIs": câmera real com pessoa de capacete e colete e estado de cada EPI |
+| 2:41–2:49 | Operação ativa com alerta de risco ergonômico (braço acima da linha do ombro) |
+| 2:49–3:05 | Slide "Hardware de sinalização" com foto da torre montada e explicação de verde, amarelo e vermelho com buzina |
+| 3:05–3:20 | Slide do Admin (central de segurança, alertas, relatórios e cadastros) |
+
+Área de risco, queda e o acionamento da torre ao vivo aparecem apenas como explicação, sem
+demonstração gravada.
+
+### 4.4 Não executado
+
+- Nesta validação técnica: câmera física, ESP32 e Supabase (o `best.pt` foi testado com quadros
+  sintéticos; os testes físicos estão no vídeo, seção 4.3).
 - Medições de precisão dos modelos e de latência.
 
 ## 5. Pendências e limitações
 
 - Vídeo da Sprint 4 publicado: <https://youtu.be/2VN0RzsWvMM>.
 - Checkpoint de EPI retreinado versionado em `2identify_operador/models/ppe/best.pt` (licença AGPL-3.0 declarada; uso comercial exige revisão).
-- Registrar evidências do teste físico (câmera, Face ID, EPI, pose, área de risco, ESP32).
+- Evidência gravada de área de risco, queda e acionamento da torre ao vivo (não aparecem no vídeo).
 - Limitações técnicas: brokers em memória (um worker), sem outbox durável, sem HTTPS/rate limiting,
   prova de vida *baseline*, triagem ergonômica não validada por especialista, sem cadastro de EPIs,
   setores e contas de operador pela interface, tela "Configurações" do Admin é placeholder.

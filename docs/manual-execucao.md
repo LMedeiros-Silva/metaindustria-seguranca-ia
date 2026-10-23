@@ -358,8 +358,9 @@ Itens mais frequentes: caminho longo demais (clone em `C:\dev`), `.env` com BOM,
 
 ## 14. O que não pôde ser validado nesta entrega
 
-- Fluxo com câmera física (Face ID, detecção de EPI, pose, área de risco): depende de hardware. O `best.pt`
-  foi validado apenas fora da câmera (carregamento, classes e inferência em quadros sintéticos).
-- Torre ESP32 física.
+- Fluxo com câmera física: não executado nesta validação técnica. O `best.pt` foi validado fora da
+  câmera (carregamento, classes e inferência em quadros sintéticos). O grupo registrou Face ID,
+  verificação de EPIs e alerta de ergonomia com câmera real no [vídeo da Sprint 4](https://youtu.be/2VN0RzsWvMM).
+- Torre ESP32 física: não executada nesta validação técnica; o vídeo mostra a estrutura montada.
 - PoC web com login válido no navegador (validados: carregamento, CORS e rejeição de login inválido; o fluxo completo é coberto pelos testes Node).
 - PoC Supabase (exige conta cloud).
