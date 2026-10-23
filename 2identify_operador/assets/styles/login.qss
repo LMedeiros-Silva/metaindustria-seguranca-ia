@@ -1,0 +1,386 @@
+QMainWindow#loginWindow,
+QWidget#loginRoot {
+  background-color: {{surface_0}};
+}
+
+QFrame#loginBrandPanel {
+  background-color: {{nav_900}};
+  border: none;
+}
+
+QLabel#brandMark {
+  color: {{surface_1}};
+  background-color: {{brand_500}};
+  border-radius: 9px;
+  font-size: {{font_panel}};
+  font-weight: 800;
+}
+
+QLabel#loginBrandName {
+  color: {{surface_1}};
+  font-size: {{font_section}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QLabel#loginProductName {
+  color: {{brand_400}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#brandEyebrow {
+  color: {{brand_400}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding-bottom: 12px;
+}
+
+QLabel#brandHeadline {
+  color: {{surface_1}};
+  font-size: 37px;
+  font-weight: 700;
+}
+
+QLabel#brandSupportingText {
+  color: {{ink_300}};
+  font-size: {{font_panel}};
+}
+
+QFrame#brandFeature {
+  background-color: rgba(20, 59, 96, 0.72);
+  border: 1px solid rgba(82, 155, 224, 0.24);
+  border-radius: 8px;
+}
+
+QLabel#featureNumber {
+  color: {{brand_400}};
+  font-size: {{font_label}};
+  font-weight: 700;
+}
+
+QLabel#featureTitle {
+  color: {{brand_50}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#brandFooter {
+  color: {{ink_500}};
+  font-size: {{font_label}};
+}
+
+QWidget#loginFormPanel {
+  background-color: {{surface_2}};
+}
+
+QLabel#accessBadge {
+  color: {{ink_500}};
+  background-color: {{line_100}};
+  border: 1px solid {{line_200}};
+  border-radius: 12px;
+  padding: 5px 10px;
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#formEyebrow {
+  color: {{brand_600}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#formTitle {
+  color: {{ink_900}};
+  font-size: 28px;
+  font-weight: 700;
+}
+
+QLabel#formDescription {
+  color: {{ink_500}};
+  font-size: {{font_body}};
+}
+
+QStackedWidget#authenticationStack,
+QWidget#faceLoginPanel,
+QWidget#credentialLoginPanel {
+  background-color: transparent;
+}
+
+QFrame#faceCameraPreview {
+  background-color: {{nav_950}};
+  border: 1px solid {{nav_600}};
+  border-radius: 10px;
+}
+
+QFrame#faceCameraPreview[faceState="scanning"],
+QFrame#faceCameraPreview[faceState="starting"] {
+  border: 2px solid {{brand_600}};
+}
+
+QFrame#faceCameraPreview[faceState="recognized"] {
+  border: 2px solid {{safe_500}};
+}
+
+QFrame#faceCameraPreview[faceState="error"] {
+  border: 2px solid {{crit_500}};
+}
+
+QFrame#faceCameraPreview[faceState="unavailable"] {
+  border: 2px solid {{warn_500}};
+}
+
+QFrame#faceStatusRow {
+  background-color: transparent;
+}
+
+QLabel#faceStatusDot {
+  color: {{brand_400}};
+  font-size: {{font_label}};
+}
+
+QLabel#faceStatusDot[faceState="recognized"] {
+  color: {{safe_500}};
+}
+
+QLabel#faceStatusDot[faceState="error"] {
+  color: {{crit_500}};
+}
+
+QLabel#faceStatusDot[faceState="unavailable"] {
+  color: {{warn_500}};
+}
+
+QLabel#faceStatusText {
+  color: {{ink_600}};
+  font-size: {{font_label}};
+}
+
+QFrame#recognizedOperatorCard {
+  background-color: {{safe_50}};
+  border: 1px solid {{safe_300}};
+  border-radius: 8px;
+}
+
+QLabel#welcomeEyebrow {
+  color: {{safe_600}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#recognizedOperatorName {
+  color: {{safe_800}};
+  font-size: {{font_panel}};
+  font-weight: 700;
+}
+
+QLabel#recognizedOperatorDetail {
+  color: {{safe_700}};
+  font-size: {{font_body}};
+}
+
+QLabel#fieldLabel {
+  color: {{ink_700}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLineEdit#usernameInput,
+QFrame#passwordInput {
+  color: {{ink_900}};
+  background-color: {{surface_1}};
+  border: 1px solid {{line_300}};
+  border-radius: 7px;
+  min-height: 48px;
+  font-size: {{font_body}};
+}
+
+QLineEdit#usernameInput {
+  padding: 0 14px;
+}
+
+QLineEdit#usernameInput:hover,
+QFrame#passwordInput:hover {
+  border-color: {{nav_muted}};
+}
+
+QLineEdit#usernameInput:focus,
+QFrame#passwordInput[focusState="focused"] {
+  border: 1px solid {{brand_500}};
+}
+
+QLineEdit#usernameInput[validationState="error"],
+QFrame#passwordInput[validationState="error"] {
+  border: 1px solid {{crit_500}};
+  background-color: {{surface_1}};
+}
+
+QLineEdit#passwordLineEdit {
+  color: {{ink_900}};
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-size: {{font_body}};
+}
+
+QLineEdit#usernameInput:disabled,
+QFrame#passwordInput:disabled,
+QLineEdit#passwordLineEdit:disabled {
+  color: {{ink_400}};
+  background-color: {{surface_3}};
+}
+
+QToolButton#passwordToggleButton {
+  color: {{brand_700}};
+  background-color: transparent;
+  border: none;
+  padding: 7px 5px;
+  font-size: {{font_label}};
+  font-weight: 700;
+}
+
+QToolButton#passwordToggleButton:hover {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border-radius: 4px;
+}
+
+QLabel#usernameError,
+QLabel#passwordError {
+  color: {{crit_600}};
+  font-size: {{font_small}};
+  padding-top: 3px;
+}
+
+QLabel#supportText {
+  color: {{ink_400}};
+  font-size: {{font_small}};
+}
+
+QFrame#loginStatusBanner {
+  border-radius: 6px;
+}
+
+QFrame#loginStatusBanner[statusKind="information"] {
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_200}};
+}
+
+QFrame#loginStatusBanner[statusKind="error"] {
+  background-color: {{crit_100}};
+  border: 1px solid {{crit_300}};
+}
+
+QFrame#loginStatusBanner[statusKind="success"] {
+  background-color: {{safe_50}};
+  border: 1px solid {{safe_300}};
+}
+
+QFrame#loginStatusBanner[statusKind="information"] QLabel#loginStatusText {
+  color: {{brand_800}};
+}
+
+QFrame#loginStatusBanner[statusKind="error"] QLabel#loginStatusText {
+  color: {{crit_700}};
+}
+
+QFrame#loginStatusBanner[statusKind="success"] QLabel#loginStatusText {
+  color: {{safe_600}};
+}
+
+QLabel#loginStatusText {
+  font-size: {{font_body}};
+  font-weight: 600;
+}
+
+QPushButton#loginButton {
+  color: {{surface_1}};
+  background-color: {{brand_600}};
+  border: none;
+  border-radius: 7px;
+  min-height: 49px;
+  font-size: {{font_small}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QPushButton#faceScanButton {
+  color: {{surface_1}};
+  background-color: {{brand_600}};
+  border: none;
+  border-radius: 7px;
+  min-height: 46px;
+  font-size: {{font_small}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QPushButton#faceScanButton:hover {
+  background-color: {{brand_700}};
+}
+
+QPushButton#faceScanButton:disabled {
+  color: {{line_200}};
+  background-color: {{nav_muted}};
+}
+
+QPushButton#secondaryAuthButton {
+  color: {{nav_500}};
+  background-color: transparent;
+  border: 1px solid {{nav_text}};
+  border-radius: 7px;
+  min-height: 42px;
+  font-size: {{font_small}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QPushButton#secondaryAuthButton:hover {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border-color: {{nav_muted}};
+}
+
+QPushButton#loginButton:hover {
+  background-color: {{brand_700}};
+}
+
+QPushButton#loginButton:pressed {
+  background-color: {{brand_700}};
+}
+
+QPushButton#loginButton:disabled {
+  color: {{line_200}};
+  background-color: {{nav_muted}};
+}
+
+QProgressBar#loginProgressBar {
+  background-color: transparent;
+  border: none;
+  max-height: 3px;
+  margin: 0 7px;
+}
+
+QProgressBar#loginProgressBar::chunk {
+  background-color: {{brand_400}};
+  border-radius: 1px;
+}
+
+QLabel#loginFooter {
+  color: {{nav_muted}};
+  font-size: {{font_label}};
+}
+
+/* Keyboard focus ring (design system). */
+QPushButton#loginButton:focus,
+QPushButton#faceScanButton:focus,
+QPushButton#secondaryAuthButton:focus {
+  border: 2px solid {{brand_800}};
+}

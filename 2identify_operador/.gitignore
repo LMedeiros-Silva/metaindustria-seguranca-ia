@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+/firmware/esp32_safety_signal/device_config.h
+
+# Runtime data
+logs/
+var/
+/tmp/
+/.tmp_api_*/
+*.log
+*.sqlite3
+
+# Models and generated artifacts
+models/*.pt
+models/*.onnx
+models/*.engine
+models/**/*.pt
+models/**/*.onnx
+models/**/*.engine
+# Face ID artifacts intentionally versioned for workstation setup.
+!models/face_detection_yunet_2023mar.onnx
+!models/face_recognition_sface_2021dec.onnx
+# Local source extracted from the provided PyTorch checkpoint.
+/best/
+dist/
+build/
+*.spec
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+

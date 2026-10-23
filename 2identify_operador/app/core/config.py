@@ -1,0 +1,337 @@
+"""Typed configuration loaded from environment variables and `.env`."""
+
+from __future__ import annotations
+
+import re
+from enum import StrEnum
+from functools import lru_cache
+from pathlib import Path
+from typing import Annotated, Literal
+
+from pydantic import (
+    AnyHttpUrl,
+    Field,
+    SecretStr,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app import __version__
+from app.core.constants import PROJECT_ROOT
+
+
+class AppEnvironment(StrEnum):
+    DEVELOPMENT = "development"
+    TESTING = "testing"
+    PRODUCTION = "production"
+
+
+class AppSettings(BaseSettings):
+    """Single source of truth for installation-specific configuration."""
+
+    model_config = SettingsConfigDict(
+        env_file=PROJECT_ROOT / ".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+        frozen=True,
+    )
+
+    app_environment: AppEnvironment = AppEnvironment.DEVELOPMENT
+    api_url: AnyHttpUrl = AnyHttpUrl("http://localhost:8000")
+    api_connect_timeout_seconds: Annotated[float, Field(gt=0, le=60)] = 3.0
+    api_read_timeout_seconds: Annotated[float, Field(gt=0, le=300)] = 10.0
+    operations_mock_enabled: bool = False
+    operator_catalog_token: SecretStr | None = None
+    # Workstation credential for Face ID (same value as OPERATOR_STATION_TOKEN in the API).
+    operator_station_token: SecretStr | None = None
+
+    ppe_model_path: Path = Path("models/ppe/best.pt")
+    ppe_model_sha256: str = (
+        "2EBD001C8AB294D27C184BD78C48236C019BB684D9774455DF0868B4E39F011F"
+    )
+    ppe_confidence_threshold: Annotated[float, Field(gt=0, le=1)] = 0.50
+    ppe_iou_threshold: Annotated[float, Field(gt=0, le=1)] = 0.45
+    ppe_inference_image_size: Annotated[int, Field(ge=320, le=1920)] = 640
+    ppe_inference_fps: Annotated[float, Field(gt=0, le=30)] = 4.0
+    ppe_inference_device: str = "cpu"
+    ppe_stability_window_frames: Annotated[int, Field(ge=1, le=120)] = 8
+    ppe_stability_minimum_frames: Annotated[int, Field(ge=1, le=120)] = 5
+    ppe_stability_present_ratio: Annotated[float, Field(gt=0, le=1)] = 0.75
+    ppe_stability_absent_ratio: Annotated[float, Field(ge=0, lt=1)] = 0.25
+    ppe_release_assessment_max_age_seconds: Annotated[
+        float,
+        Field(gt=0, le=10),
+    ] = 2.0
+    # Start the operation as soon as a fresh assessment confirms every required PPE.
+    ppe_auto_start_enabled: bool = True
+    ppe_fusion_evidence_max_age_seconds: Annotated[float, Field(gt=0, le=10)] = 2.0
+    ppe_fusion_conflict_resolution_seconds: Annotated[float, Field(gt=0, le=60)] = 2.0
+    # None derives the tolerance from the stabilization window and the per-camera rate.
+    ppe_inconclusive_tolerance_seconds: Annotated[float, Field(gt=0, le=300)] | None = None
+    ppe_tracking_iou_threshold: Annotated[float, Field(gt=0, le=1)] = 0.30
+    ppe_tracking_maximum_missed_batches: Annotated[int, Field(ge=0, le=120)] = 3
+    ppe_tracking_minimum_confirmation_hits: Annotated[
+        int,
+        Field(ge=1, le=120),
+    ] = 2
+    pose_estimation_enabled: bool = True
+    pose_model_path: Path = Path("models/pose/yolo11n-pose.pt")
+    pose_model_sha256: str = (
+        "869E83FCDFFDC7371FA4E34CD8E51C838CC729571D1635E5141E3075E9319DC0"
+    )
+    pose_confidence_threshold: Annotated[float, Field(gt=0, le=1)] = 0.50
+    pose_keypoint_confidence_threshold: Annotated[float, Field(gt=0, le=1)] = 0.50
+    pose_inference_image_size: Annotated[int, Field(ge=320, le=1920)] = 640
+    pose_inference_fps: Annotated[float, Field(gt=0, le=30)] = 4.0
+    pose_inference_device: str = "cpu"
+    ergonomics_trunk_warning_degrees: Annotated[
+        float,
+        Field(gt=0, le=90),
+    ] = 20.0
+    ergonomics_trunk_critical_degrees: Annotated[
+        float,
+        Field(gt=0, le=90),
+    ] = 45.0
+    ergonomics_overhead_reach_enabled: bool = True
+    ergonomics_knee_flexion_enabled: bool = False
+    ergonomics_knee_warning_degrees: Annotated[
+        float,
+        Field(gt=0, lt=180),
+    ] = 120.0
+    ergonomics_knee_critical_degrees: Annotated[
+        float,
+        Field(gt=0, lt=180),
+    ] = 90.0
+    fall_detection_enabled: bool = True
+    fall_lying_trunk_degrees: Annotated[float, Field(gt=0, le=90)] = 60.0
+    fall_upright_trunk_degrees: Annotated[float, Field(gt=0, lt=90)] = 40.0
+    fall_lying_aspect_ratio: Annotated[float, Field(gt=0, le=10)] = 1.2
+    fall_confirmation_seconds: Annotated[float, Field(gt=0, le=60)] = 2.0
+    fall_minimum_frames: Annotated[int, Field(ge=2, le=120)] = 3
+    fall_recovery_seconds: Annotated[float, Field(gt=0, le=120)] = 3.0
+    fall_evidence_gap_seconds: Annotated[float, Field(gt=0, le=30)] = 1.5
+    alert_minimum_consecutive_observations: Annotated[
+        int,
+        Field(ge=1, le=120),
+    ] = 3
+    alert_minimum_persistence_seconds: Annotated[
+        float,
+        Field(ge=0, le=300),
+    ] = 0.75
+    alert_resolution_consecutive_observations: Annotated[
+        int,
+        Field(ge=1, le=120),
+    ] = 3
+    alert_cooldown_seconds: Annotated[float, Field(ge=0, le=86_400)] = 30.0
+    alert_critical_after_seconds: Annotated[float, Field(gt=0, le=300)] = 5.0
+    safety_state_sync_interval_seconds: Annotated[
+        float,
+        Field(gt=0, le=60),
+    ] = 2.0
+    alert_delivery_max_attempts: Annotated[int, Field(ge=1, le=10)] = 3
+    alert_delivery_retry_delay_seconds: Annotated[
+        float,
+        Field(ge=0, le=60),
+    ] = 1.0
+    ultralytics_config_directory: Path = Path("var/ultralytics")
+    manuals_directory: Path = Path("assets/manuals")
+    camera_source: str = "0"
+    camera_width: Annotated[int, Field(ge=320, le=7680)] = 1280
+    camera_height: Annotated[int, Field(ge=240, le=4320)] = 720
+    camera_open_timeout_ms: Annotated[int, Field(ge=500, le=60_000)] = 5_000
+    camera_read_timeout_ms: Annotated[int, Field(ge=100, le=60_000)] = 2_000
+    camera_max_failed_reads: Annotated[int, Field(ge=1, le=300)] = 30
+    camera_preview_fps: Annotated[float, Field(gt=0, le=60)] = 20.0
+    pose_camera_ids: str = ""
+    login_camera_source: str = "0"
+    face_auth_enabled: bool = True
+    face_auth_timeout_seconds: Annotated[float, Field(gt=0, le=120)] = 15.0
+    face_detector_model_path: Path = Path("models/face_detection_yunet_2023mar.onnx")
+    face_recognition_model_path: Path = Path("models/face_recognition_sface_2021dec.onnx")
+    face_auth_model_id: str = "opencv_sface_2021dec"
+    face_auth_detection_threshold: Annotated[float, Field(gt=0, le=1)] = 0.90
+    face_auth_inference_fps: Annotated[float, Field(gt=0, le=30)] = 8.0
+    face_auth_preview_fps: Annotated[float, Field(gt=0, le=60)] = 20.0
+    face_auth_min_consecutive_matches: Annotated[int, Field(ge=1, le=20)] = 3
+    face_auth_min_face_ratio: Annotated[float, Field(gt=0, le=1)] = 0.18
+    face_auth_liveness_required: bool = True
+    face_auth_liveness_min_duration_seconds: Annotated[float, Field(gt=0, le=10)] = 0.8
+    face_auth_liveness_min_movement_ratio: Annotated[float, Field(gt=0, le=0.5)] = 0.045
+    login_camera_width: Annotated[int, Field(ge=320, le=7680)] = 1280
+    login_camera_height: Annotated[int, Field(ge=240, le=4320)] = 720
+    login_camera_open_timeout_ms: Annotated[int, Field(ge=500, le=60_000)] = 5_000
+    login_camera_read_timeout_ms: Annotated[int, Field(ge=100, le=60_000)] = 2_000
+    login_camera_max_failed_reads: Annotated[int, Field(ge=1, le=300)] = 30
+
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    log_format: Literal["json", "text"] = "json"
+    log_directory: Path = Path("logs")
+    log_file_max_bytes: Annotated[int, Field(ge=1_048_576)] = 10_485_760
+    log_file_backup_count: Annotated[int, Field(ge=1, le=30)] = 10
+
+    @field_validator(
+        "ppe_model_path",
+        "pose_model_path",
+        "ultralytics_config_directory",
+        "manuals_directory",
+        "face_detector_model_path",
+        "face_recognition_model_path",
+        "log_directory",
+        mode="after",
+    )
+    @classmethod
+    def resolve_project_path(cls, path: Path) -> Path:
+        expanded_path = path.expanduser()
+        if expanded_path.is_absolute():
+            return expanded_path.resolve()
+        return (PROJECT_ROOT / expanded_path).resolve()
+
+    @field_validator("camera_source", "login_camera_source", mode="before")
+    @classmethod
+    def normalize_camera_source(cls, source: object) -> str:
+        normalized = str(source).strip()
+        if not normalized:
+            raise ValueError("CAMERA_SOURCE não pode ser vazio")
+        return normalized
+
+    @field_validator("face_auth_model_id")
+    @classmethod
+    def normalize_face_model_id(cls, model_id: str) -> str:
+        normalized = model_id.strip()
+        if not normalized:
+            raise ValueError("FACE_AUTH_MODEL_ID não pode ser vazio")
+        return normalized
+
+    @field_validator("operator_catalog_token", "operator_station_token", mode="before")
+    @classmethod
+    def validate_operator_station_secret(
+        cls, value: object, info: ValidationInfo
+    ) -> SecretStr | None:
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return None
+        name = str(info.field_name).upper()
+        raw_value = value.get_secret_value() if isinstance(value, SecretStr) else str(value)
+        if len(raw_value.encode("utf-8")) < 32:
+            raise ValueError(f"{name} deve possuir pelo menos 32 bytes")
+        if raw_value.casefold().startswith(("change_me", "generate_")):
+            raise ValueError(f"{name} ainda contém um placeholder")
+        return SecretStr(raw_value)
+
+    @field_validator("ppe_inference_device", "pose_inference_device")
+    @classmethod
+    def normalize_ppe_inference_device(cls, device: str) -> str:
+        normalized = device.strip()
+        if not normalized:
+            raise ValueError("o dispositivo de inferência não pode ser vazio")
+        return normalized
+
+    @field_validator("pose_model_sha256")
+    @classmethod
+    def normalize_pose_model_sha256(cls, checksum: str) -> str:
+        normalized = checksum.strip().casefold()
+        if re.fullmatch(r"[0-9a-f]{64}", normalized) is None:
+            raise ValueError("POSE_MODEL_SHA256 deve possuir 64 caracteres hexadecimais")
+        return normalized
+
+    @field_validator("ppe_model_sha256")
+    @classmethod
+    def normalize_ppe_model_sha256(cls, checksum: str) -> str:
+        normalized = checksum.strip().casefold()
+        if re.fullmatch(r"[0-9a-f]{64}", normalized) is None:
+            raise ValueError("PPE_MODEL_SHA256 deve possuir 64 caracteres hexadecimais")
+        return normalized
+
+    @model_validator(mode="after")
+    def enforce_production_biometric_security(self) -> AppSettings:
+        if self.ppe_stability_minimum_frames > self.ppe_stability_window_frames:
+            raise ValueError(
+                "PPE_STABILITY_MINIMUM_FRAMES não pode exceder "
+                "PPE_STABILITY_WINDOW_FRAMES"
+            )
+        if self.ppe_stability_absent_ratio >= self.ppe_stability_present_ratio:
+            raise ValueError(
+                "PPE_STABILITY_ABSENT_RATIO deve ser menor que "
+                "PPE_STABILITY_PRESENT_RATIO"
+            )
+        if (
+            self.ergonomics_trunk_warning_degrees
+            >= self.ergonomics_trunk_critical_degrees
+        ):
+            raise ValueError(
+                "ERGONOMICS_TRUNK_WARNING_DEGREES deve ser menor que "
+                "ERGONOMICS_TRUNK_CRITICAL_DEGREES"
+            )
+        if (
+            self.ergonomics_knee_critical_degrees
+            >= self.ergonomics_knee_warning_degrees
+        ):
+            raise ValueError(
+                "ERGONOMICS_KNEE_CRITICAL_DEGREES deve ser menor que "
+                "ERGONOMICS_KNEE_WARNING_DEGREES"
+            )
+        if self.fall_upright_trunk_degrees >= self.fall_lying_trunk_degrees:
+            raise ValueError(
+                "FALL_UPRIGHT_TRUNK_DEGREES deve ser menor que FALL_LYING_TRUNK_DEGREES"
+            )
+        if self.alert_minimum_persistence_seconds >= self.alert_critical_after_seconds:
+            raise ValueError(
+                "ALERT_MINIMUM_PERSISTENCE_SECONDS deve ser menor que "
+                "ALERT_CRITICAL_AFTER_SECONDS"
+            )
+        if self.app_environment is AppEnvironment.PRODUCTION:
+            if not self.face_auth_liveness_required:
+                raise ValueError("prova de vida é obrigatória em produção")
+            if self.operations_mock_enabled:
+                raise ValueError("operações mockadas são proibidas em produção")
+        return self
+
+    @property
+    def app_version(self) -> str:
+        return __version__
+
+    @property
+    def api_base_url(self) -> str:
+        return str(self.api_url).rstrip("/")
+
+    @property
+    def parsed_camera_source(self) -> int | str:
+        """Return numeric device indexes as int and URLs/paths as str."""
+
+        if self.camera_source.lstrip("-").isdigit():
+            return int(self.camera_source)
+        return self.camera_source
+
+    @property
+    def parsed_login_camera_source(self) -> int | str:
+        """Return the dedicated authentication camera source in OpenCV format."""
+
+        if self.login_camera_source.lstrip("-").isdigit():
+            return int(self.login_camera_source)
+        return self.login_camera_source
+
+    @property
+    def parsed_pose_camera_ids(self) -> frozenset[int] | None:
+        """Optional local allowlist; empty means every selected camera may run Pose."""
+
+        if not self.pose_camera_ids.strip():
+            return None
+        parts = tuple(part.strip() for part in self.pose_camera_ids.split(","))
+        if any(not part.isdecimal() or int(part) <= 0 for part in parts):
+            raise ValueError("POSE_CAMERA_IDS deve conter IDs positivos separados por vírgula")
+        return frozenset(int(part) for part in parts)
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> AppSettings:
+    """Build settings once per process."""
+
+    return AppSettings()
+
+
+def clear_settings_cache() -> None:
+    """Reset cached settings for tests and controlled runtime reconfiguration."""
+
+    get_settings.cache_clear()

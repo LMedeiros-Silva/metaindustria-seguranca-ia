@@ -1,0 +1,88 @@
+QFrame#mainSidebar {
+  background-color: {{nav_950}};
+  border: none;
+  border-right: 1px solid {{nav_700}};
+}
+
+QLabel#sidebarBrandMark {
+  color: {{surface_1}};
+  background-color: {{brand_500}};
+  border-radius: {{radius_md}};
+  font-size: {{font_body}};
+  font-weight: 800;
+}
+
+QLabel#sidebarBrandName {
+  color: {{surface_1}};
+  font-size: {{font_panel}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QLabel#sidebarProductName {
+  color: {{brand_400}};
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#sidebarSectionLabel {
+  color: {{nav_muted}};
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding-left: 12px;
+}
+
+QPushButton#sidebarNavigationButton,
+QPushButton#sidebarLogoutButton {
+  color: {{nav_text}};
+  background-color: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  border-radius: {{radius_md}};
+  min-height: 44px;
+  padding: 0 14px;
+  text-align: left;
+  font-size: {{font_body}};
+  font-weight: 600;
+}
+
+QPushButton#sidebarNavigationButton:hover,
+QPushButton#sidebarLogoutButton:hover {
+  color: {{surface_1}};
+  background-color: {{nav_700}};
+}
+
+QPushButton#sidebarNavigationButton[selected="true"] {
+  color: {{surface_1}};
+  background-color: {{nav_700}};
+  border-left: 3px solid {{brand_400}};
+  font-weight: 700;
+}
+
+QPushButton#sidebarNavigationButton:pressed,
+QPushButton#sidebarLogoutButton:pressed {
+  background-color: {{nav_850}};
+}
+
+QPushButton#sidebarLogoutButton:hover {
+  color: {{crit_300}};
+  background-color: {{nav_700}};
+}
+
+QFrame#sidebarSeparator {
+  color: {{nav_700}};
+  max-height: 1px;
+}
+
+QLabel#sidebarVersion {
+  color: {{nav_muted}};
+  font-size: {{font_label}};
+}
+
+QFrame#mainSidebar[compact="true"] QPushButton#sidebarNavigationButton,
+QFrame#mainSidebar[compact="true"] QPushButton#sidebarLogoutButton {
+  padding: 0;
+  text-align: center;
+}

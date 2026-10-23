@@ -1,0 +1,292 @@
+"""FastAPI dependency composition for application services."""
+
+from __future__ import annotations
+
+import logging
+import secrets
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+from starlette.requests import HTTPConnection
+
+from app.core.config import Settings
+from app.core.database import get_db
+from app.core.security import AccessTokenService
+from app.realtime import AdminRealtimeAuthorizer, RealtimeEventBroker
+from app.repositories import (
+    AdminAlertRepository,
+    DashboardRepository,
+    OperationRepository,
+    SafetyAlertRepository,
+    UserRepository,
+)
+from app.repositories.face_identity_repository import FaceIdentityRepository
+from app.services import (
+    ActiveOperationRegistry,
+    AdminAlertsService,
+    AdminAuthorizationRejectedError,
+    AdminAuthorizationService,
+    AdminDashboardService,
+    AdministratorPrincipal,
+    AuthenticationService,
+    OperationsService,
+    OperatorAlertService,
+    OperatorAuthorizationRejectedError,
+    OperatorAuthorizationService,
+    OperatorPrincipal,
+    SafetyStateAggregator,
+    SessionLiveness,
+)
+from app.services.face_authentication import FaceAuthenticationService
+
+logger = logging.getLogger(__name__)
+_ADMIN_PROFILE = frozenset({"administrador"})
+_NO_STORE_HEADERS = {"Cache-Control": "no-store", "Pragma": "no-cache"}
+_ADMIN_BEARER = HTTPBearer(auto_error=False, scheme_name="AdminBearer")
+_OPERATOR_BEARER = HTTPBearer(auto_error=False, scheme_name="OperatorBearer")
+_STATION_BEARER = HTTPBearer(auto_error=False, scheme_name="OperatorStationBearer")
+
+
+def get_runtime_settings(connection: HTTPConnection) -> Settings:
+    settings = getattr(connection.app.state, "settings", None)
+    if not isinstance(settings, Settings):
+        raise RuntimeError("configuração da aplicação não disponível")
+    return settings
+
+
+def get_realtime_event_broker(connection: HTTPConnection) -> RealtimeEventBroker:
+    broker = getattr(connection.app.state, "realtime_event_broker", None)
+    if not isinstance(broker, RealtimeEventBroker):
+        raise RuntimeError("broker de eventos em tempo real não disponível")
+    return broker
+
+
+def get_safety_state_broker(connection: HTTPConnection) -> RealtimeEventBroker:
+    broker = getattr(connection.app.state, "safety_state_broker", None)
+    if not isinstance(broker, RealtimeEventBroker):
+        raise RuntimeError("broker do sinalizador não disponível")
+    return broker
+
+
+def get_safety_state_aggregator(connection: HTTPConnection) -> SafetyStateAggregator:
+    aggregator = getattr(connection.app.state, "safety_state_aggregator", None)
+    if not isinstance(aggregator, SafetyStateAggregator):
+        raise RuntimeError("agregador de segurança não disponível")
+    return aggregator
+
+
+def get_session_liveness(connection: HTTPConnection) -> SessionLiveness:
+    liveness = getattr(connection.app.state, "session_liveness", None)
+    if not isinstance(liveness, SessionLiveness):
+        raise RuntimeError("registro de sessões do Operator não disponível")
+    return liveness
+
+
+def get_active_operation_registry(connection: HTTPConnection) -> ActiveOperationRegistry:
+    registry = getattr(connection.app.state, "active_operation_registry", None)
+    if not isinstance(registry, ActiveOperationRegistry):
+        raise RuntimeError("registro de operações ativas não disponível")
+    return registry
+
+
+def get_admin_realtime_authorizer(
+    connection: HTTPConnection,
+) -> AdminRealtimeAuthorizer:
+    authorizer = getattr(connection.app.state, "admin_realtime_authorizer", None)
+    if not isinstance(authorizer, AdminRealtimeAuthorizer):
+        raise RuntimeError("autorização administrativa em tempo real não disponível")
+    return authorizer
+
+
+def get_authentication_service(
+    session: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> AuthenticationService:
+    return AuthenticationService(
+        repository=UserRepository(session),
+        tokens=AccessTokenService(settings),
+        allowed_profiles=settings.auth_allowed_profiles,
+    )
+
+
+def get_face_authentication_service(
+    session: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> FaceAuthenticationService:
+    return FaceAuthenticationService(
+        FaceIdentityRepository(session),
+        AccessTokenService(settings),
+        model_id=settings.face_auth_model_id,
+        similarity_threshold=settings.face_auth_similarity_threshold,
+        ambiguity_margin=settings.face_auth_ambiguity_margin,
+        minimum_probes=settings.face_auth_min_probes,
+    )
+
+
+def require_operator_station(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None,
+        Depends(_STATION_BEARER),
+    ],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> None:
+    """The Operator workstation proves itself; it cannot name the employee."""
+
+    configured = settings.operator_station_token
+    if configured is None:
+        logger.error("operator_station_authentication_not_configured")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Face ID não configurado na API.",
+            headers=_NO_STORE_HEADERS,
+        )
+    if credentials is None or not secrets.compare_digest(
+        credentials.credentials.encode("utf-8"),
+        configured.get_secret_value().encode("utf-8"),
+    ):
+        logger.warning("operator_station_authorization_rejected")
+        # 403, not 401: the Operator must tell a misconfigured station from an unknown face.
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Estação não autorizada.",
+            headers=_NO_STORE_HEADERS,
+        )
+
+
+def get_admin_authentication_service(
+    session: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> AuthenticationService:
+    return AuthenticationService(
+        repository=UserRepository(session),
+        tokens=AccessTokenService(
+            settings,
+            audience=settings.auth_admin_token_audience,
+        ),
+        allowed_profiles=_ADMIN_PROFILE,
+    )
+
+
+def get_admin_authorization_service(
+    session: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> AdminAuthorizationService:
+    return AdminAuthorizationService(
+        repository=UserRepository(session),
+        tokens=AccessTokenService(
+            settings,
+            audience=settings.auth_admin_token_audience,
+        ),
+    )
+
+
+def get_current_admin(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None,
+        Depends(_ADMIN_BEARER),
+    ],
+    service: Annotated[
+        AdminAuthorizationService,
+        Depends(get_admin_authorization_service),
+    ],
+) -> AdministratorPrincipal:
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Autenticação administrativa necessária.",
+            headers={"WWW-Authenticate": "Bearer", **_NO_STORE_HEADERS},
+        )
+
+    try:
+        return service.authorize(credentials.credentials)
+    except AdminAuthorizationRejectedError as error:
+        logger.warning("admin_bearer_authorization_rejected")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token de acesso inválido.",
+            headers={"WWW-Authenticate": "Bearer", **_NO_STORE_HEADERS},
+        ) from error
+    except SQLAlchemyError as error:
+        logger.error(
+            "admin_bearer_database_unavailable",
+            extra={"error_type": type(error).__name__},
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Serviço administrativo indisponível.",
+            headers=_NO_STORE_HEADERS,
+        ) from error
+
+
+def get_admin_dashboard_service(
+    session: Annotated[Session, Depends(get_db)],
+) -> AdminDashboardService:
+    return AdminDashboardService(DashboardRepository(session))
+
+
+def get_admin_alerts_service(
+    session: Annotated[Session, Depends(get_db)],
+) -> AdminAlertsService:
+    return AdminAlertsService(AdminAlertRepository(session))
+
+
+def get_operations_service(
+    session: Annotated[Session, Depends(get_db)],
+) -> OperationsService:
+    return OperationsService(OperationRepository(session))
+
+
+def get_operator_alert_service(
+    session: Annotated[Session, Depends(get_db)],
+    liveness: Annotated[SessionLiveness, Depends(get_session_liveness)],
+) -> OperatorAlertService:
+    return OperatorAlertService(SafetyAlertRepository(session), liveness=liveness)
+
+
+def get_operator_authorization_service(
+    session: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_runtime_settings)],
+) -> OperatorAuthorizationService:
+    return OperatorAuthorizationService(
+        repository=UserRepository(session),
+        tokens=AccessTokenService(settings),
+        allowed_profiles=settings.auth_allowed_profiles,
+        employees=FaceIdentityRepository(session),
+    )
+
+
+def get_current_operator(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None,
+        Depends(_OPERATOR_BEARER),
+    ],
+    service: Annotated[
+        OperatorAuthorizationService,
+        Depends(get_operator_authorization_service),
+    ],
+) -> OperatorPrincipal:
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Autenticação do operador necessária.",
+            headers={"WWW-Authenticate": "Bearer", **_NO_STORE_HEADERS},
+        )
+    try:
+        return service.authorize(credentials.credentials)
+    except OperatorAuthorizationRejectedError as error:
+        logger.warning("operator_bearer_authorization_rejected")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token de acesso inválido.",
+            headers={"WWW-Authenticate": "Bearer", **_NO_STORE_HEADERS},
+        ) from error
+    except SQLAlchemyError as error:
+        logger.error("operator_bearer_database_unavailable")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Serviço do operador indisponível.",
+            headers=_NO_STORE_HEADERS,
+        ) from error

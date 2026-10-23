@@ -1,0 +1,478 @@
+QWidget#safetyVerificationPage {
+  background-color: {{surface_0}};
+}
+
+QPushButton#safetyBackButton {
+  min-height: 30px;
+  color: {{brand_700}};
+  background-color: transparent;
+  border: 1px solid {{brand_200}};
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: {{font_small}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QPushButton#safetyBackButton:hover {
+  color: {{surface_1}};
+  background-color: {{brand_600}};
+  border-color: {{brand_600}};
+}
+
+QPushButton#safetyBackButton:pressed {
+  background-color: {{brand_700}};
+  border-color: {{brand_700}};
+  padding-top: 1px;
+}
+
+QLabel#safetyEyebrow {
+  color: {{brand_600}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyTitle {
+  color: {{ink_900}};
+  font-size: {{font_title}};
+  font-weight: 700;
+}
+
+QLabel#safetyDescription {
+  color: {{ink_500}};
+  font-size: {{font_body}};
+}
+
+QSplitter#safetySplitter {
+  background-color: transparent;
+  border: none;
+}
+
+QSplitter#safetySplitter::handle {
+  background-color: transparent;
+  width: 16px;
+}
+
+QFrame#safetyCameraPanel,
+QFrame#safetyContextPanel {
+  background-color: {{surface_1}};
+  border: 1px solid {{line_200}};
+  border-radius: 10px;
+}
+
+QLabel#safetyPanelTitle {
+  color: {{ink_800}};
+  font-size: {{font_panel}};
+  font-weight: 700;
+}
+
+QLabel#safetyDetectionOverlayStatus {
+  color: {{ink_500}};
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_200}};
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyCameraStatus {
+  color: {{ink_500}};
+  background-color: {{surface_3}};
+  border: 1px solid {{line_200}};
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyCameraStatus[state="starting"] {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border-color: {{brand_200}};
+}
+
+QLabel#safetyCameraStatus[state="active"] {
+  color: {{safe_600}};
+  background-color: {{safe_100}};
+  border-color: {{safe_300}};
+}
+
+QLabel#safetyCameraStatus[state="unavailable"] {
+  color: {{warn_600}};
+  background-color: {{warn_100}};
+  border-color: {{warn_300}};
+}
+
+QLabel#safetyCameraStatus[state="error"] {
+  color: {{crit_700}};
+  background-color: {{crit_100}};
+  border-color: {{crit_300}};
+}
+
+QPushButton#safetyCameraRetryButton {
+  min-height: 26px;
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_300}};
+  border-radius: 6px;
+  padding: 0 9px;
+  font-size: {{font_small}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QPushButton#safetyCameraRetryButton:hover {
+  color: {{surface_1}};
+  background-color: {{brand_600}};
+  border-color: {{brand_600}};
+}
+
+QPushButton#safetyCameraRetryButton:pressed {
+  background-color: {{brand_700}};
+  border-color: {{brand_700}};
+  padding-top: 1px;
+}
+
+QStackedWidget#safetyCameraStack,
+QFrame#safetyCameraPreview {
+  background-color: {{ink_900}};
+  border: 1px solid {{nav_600}};
+  border-radius: 9px;
+}
+
+QFrame#safetyCameraPlaceholder {
+  background-color: {{ink_900}};
+  border: 1px solid {{nav_600}};
+  border-radius: 9px;
+}
+
+QLabel#safetyCameraMarker {
+  color: {{brand_300}};
+  background-color: {{nav_700}};
+  border: 1px solid {{nav_500}};
+  border-radius: 10px;
+  font-size: {{font_badge}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyCameraPlaceholderTitle {
+  color: {{surface_1}};
+  font-size: {{font_section}};
+  font-weight: 700;
+}
+
+QLabel#safetyCameraPlaceholderDescription {
+  color: {{ink_300}};
+  font-size: {{font_body}};
+}
+
+QScrollArea#safetyContextScrollArea,
+QScrollArea#safetyContextScrollArea > QWidget > QWidget,
+QWidget#safetyContextContent,
+QWidget#safetyPpeContainer {
+  background-color: transparent;
+  border: none;
+}
+
+QLabel#safetySectionLabel {
+  color: {{ink_500}};
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyOperationName,
+QLabel#safetyOperatorName,
+QLabel#safetyRiskAreaName {
+  color: {{ink_800}};
+  font-size: {{font_body}};
+  font-weight: 650;
+}
+
+QLabel#safetyMetadata {
+  color: {{ink_400}};
+  font-size: {{font_label}};
+}
+
+QLabel#safetyPpeCount {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_200}};
+  border-radius: 9px;
+  padding: 4px 8px;
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyInferenceStatus {
+  border-radius: 8px;
+  padding: 4px 7px;
+  font-size: {{font_label}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyInferenceStatus[state="not_initialized"] {
+  color: {{ink_500}};
+  background-color: {{surface_3}};
+  border: 1px solid {{line_200}};
+}
+
+QLabel#safetyInferenceStatus[state="loading"] {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_200}};
+}
+
+QLabel#safetyInferenceStatus[state="active"] {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border: 1px solid {{brand_200}};
+}
+
+QLabel#safetyInferenceStatus[state="unavailable"],
+QLabel#safetyInferenceStatus[state="error"] {
+  color: {{crit_700}};
+  background-color: {{crit_100}};
+  border: 1px solid {{crit_300}};
+}
+
+QFrame#safetyPpeRow {
+  background-color: {{surface_2}};
+  border: 1px solid {{line_200}};
+  border-radius: 7px;
+}
+
+QLabel#safetyPpeName {
+  color: {{nav_600}};
+  font-size: {{font_body}};
+  font-weight: 650;
+}
+
+QLabel#safetyPpeState {
+  color: {{warn_700}};
+  background-color: {{warn_100}};
+  border: 1px solid {{warn_300}};
+  border-radius: 8px;
+  padding: 4px 7px;
+  font-size: {{font_badge}};
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+QLabel#safetyPpeState[state="confirmed"] {
+  color: {{safe_600}};
+  background-color: {{safe_100}};
+  border-color: {{safe_300}};
+}
+
+QLabel#safetyPpeState[state="collecting"] {
+  color: {{brand_700}};
+  background-color: {{brand_50}};
+  border-color: {{brand_300}};
+}
+
+QLabel#safetyPpeState[state="absent"] {
+  color: {{crit_700}};
+  background-color: {{crit_100}};
+  border-color: {{crit_300}};
+}
+
+QLabel#safetyPpeState[state="unstable"] {
+  color: {{warn_600}};
+  background-color: {{warn_100}};
+  border-color: {{warn_300}};
+}
+
+QLabel#safetyPpeState[state="unmapped"] {
+  color: {{ink_500}};
+  background-color: {{surface_3}};
+  border-color: {{line_200}};
+}
+
+QLabel#safetyPpeEmptyState {
+  color: {{ink_400}};
+  background-color: {{surface_2}};
+  border: 1px dashed {{line_300}};
+  border-radius: 7px;
+  padding: 14px;
+  font-size: {{font_badge}};
+}
+
+QScrollArea#safetyContextScrollArea QScrollBar:vertical {
+  width: 8px;
+  margin: 2px 0;
+  background-color: transparent;
+}
+
+QScrollArea#safetyContextScrollArea QScrollBar::handle:vertical {
+  min-height: 28px;
+  background-color: {{line_300}};
+  border-radius: 4px;
+}
+
+QScrollArea#safetyContextScrollArea QScrollBar::handle:vertical:hover {
+  background-color: {{ink_300}};
+}
+
+QScrollArea#safetyContextScrollArea QScrollBar::add-line:vertical,
+QScrollArea#safetyContextScrollArea QScrollBar::sub-line:vertical,
+QScrollArea#safetyContextScrollArea QScrollBar::add-page:vertical,
+QScrollArea#safetyContextScrollArea QScrollBar::sub-page:vertical {
+  height: 0;
+  background-color: transparent;
+}
+
+QFrame#safetyReleaseBanner {
+  background-color: {{warn_100}};
+  border: 1px solid {{warn_300}};
+  border-radius: 9px;
+}
+
+QFrame#safetyReleaseBanner[state="compliant"] {
+  background-color: {{safe_100}};
+  border-color: {{safe_300}};
+}
+
+QLabel#safetyReleaseMarker {
+  color: {{warn_700}};
+  background-color: {{warn_100}};
+  border: 1px solid {{warn_300}};
+  border-radius: 19px;
+  font-size: {{font_section}};
+  font-weight: 800;
+}
+
+QFrame#safetyReleaseBanner[state="compliant"] QLabel#safetyReleaseMarker {
+  color: {{safe_700}};
+  background-color: {{safe_100}};
+  border-color: {{safe_300}};
+}
+
+QLabel#safetyReleaseTitle {
+  color: {{warn_800}};
+  font-size: {{font_body}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QFrame#safetyReleaseBanner[state="compliant"] QLabel#safetyReleaseTitle {
+  color: {{safe_700}};
+}
+
+QLabel#safetyReleaseDescription {
+  color: {{warn_700}};
+  font-size: {{font_small}};
+}
+
+QFrame#safetyReleaseBanner[state="compliant"] QLabel#safetyReleaseDescription {
+  color: {{safe_700}};
+}
+
+QLabel#safetyReleaseStatus {
+  color: {{warn_700}};
+  background-color: {{warn_100}};
+  border: 1px solid {{warn_300}};
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: {{font_badge}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QFrame#safetyReleaseBanner[state="compliant"] QLabel#safetyReleaseStatus {
+  color: {{safe_700}};
+  background-color: {{safe_100}};
+  border-color: {{safe_300}};
+}
+
+QPushButton#safetyStartOperationButton {
+  min-height: 34px;
+  color: {{surface_1}};
+  background-color: {{safe_600}};
+  border: 1px solid {{safe_700}};
+  border-radius: 7px;
+  padding: 0 14px;
+  font-size: {{font_small}};
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+QPushButton#safetyStartOperationButton:hover {
+  background-color: {{safe_700}};
+}
+
+QPushButton#safetyStartOperationButton:pressed {
+  background-color: {{safe_800}};
+  padding-top: 1px;
+}
+
+QPushButton#safetyStartOperationButton:disabled {
+  color: {{ink_400}};
+  background-color: {{line_100}};
+  border-color: {{line_300}};
+}
+
+/* Keyboard focus ring (design system). */
+QPushButton#safetyBackButton:focus,
+QPushButton#safetyCameraRetryButton:focus,
+QPushButton#safetyStartOperationButton:focus {
+  border: 2px solid {{brand_800}};
+}
+
+/* Phase 4: camera panel matches the dark monitoring surface. */
+QFrame#safetyCameraPanel {
+  background-color: {{nav_950}};
+  border: 1px solid {{nav_800}};
+  border-radius: {{radius_lg}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyPanelTitle {
+  color: {{surface_1}};
+}
+
+QFrame#safetyContextPanel {
+  border-radius: {{radius_lg}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyDetectionOverlayStatus {
+  color: {{nav_text}};
+  background-color: {{nav_900}};
+  border: 1px solid {{nav_700}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyCameraStatus {
+  color: {{nav_text}};
+  background-color: {{nav_800}};
+  border-color: {{nav_700}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyCameraStatus[state="starting"] {
+  color: {{brand_300}};
+  border-color: {{brand_700}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyCameraStatus[state="active"] {
+  color: {{safe_300}};
+  border-color: {{safe_700}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyCameraStatus[state="unavailable"] {
+  color: {{warn_300}};
+  border-color: {{warn_700}};
+}
+
+QFrame#safetyCameraPanel QLabel#safetyCameraStatus[state="error"] {
+  color: {{crit_300}};
+  border-color: {{crit_700}};
+}
+
+QLabel#safetyDescription {
+  font-size: {{font_small}};
+}
