@@ -72,14 +72,14 @@ ocorrências.
 
 ## 2. Integrantes
 
-| Nome | RM |
-|---|---|
-| Leonardo Medeiros | 559220 |
-| Arthur Bergamaço Alves | 556207 |
-| Breno Barbosa Pereira | 555348 |
-| Mateus de Souza Santos | 559118 |
-| Pietro Rodriguez | 555899 |
-| Renan Melo Rosembeng | 558535 |
+| Nome | RM | Área na Sprint 4 |
+|---|---|---|
+| Leonardo Medeiros | 559220 | Software: Admin, Operador, API, PostgreSQL e integração |
+| Arthur Bergamaço Alves | 556207 | Inteligência Artificial: YOLO, detecção de EPIs e ergonomia |
+| Breno Barbosa Pereira | 555348 | Design das interfaces do Admin |
+| Mateus de Souza Santos | 559118 | Hardware: ESP32 e torre luminosa |
+| Pietro Rodriguez | 555899 | EPIs: escolha e definição dos EPIs monitorados |
+| Renan Melo Rosembeng | 558535 | Hardware: ESP32 e torre luminosa |
 
 ---
 
@@ -637,4 +637,5 @@ Marcado somente o que foi realizado e verificado nesta entrega.
   comportamento explicado); o acionamento das cores ao vivo não aparece na gravação
 - [x] Board do Trello atualizado com o Sprint Backlog da Sprint 4 (listas "Sprint Backlog — Sprint 4" e
   "Concluído — Sprint 4"; o histórico da Sprint 3 foi preservado nas listas "— Sprint 3")
-- [ ] Sprint Review final realizada, com a ata registrada no Trello e em [docs/review-final.md](docs/review-final.md)
+- [x] Ata da Sprint Review final preparada no Trello e em [docs/review-final.md](docs/review-final.md)
+- [ ] Sprint Review realizada: data, feedback e aceitação formal das entregas ainda a registrar

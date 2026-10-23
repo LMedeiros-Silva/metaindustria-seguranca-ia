@@ -1,21 +1,33 @@
-# Sprint Review Final — Sprint 4 (estrutura)
+# Sprint Review Final — Sprint 4 | Entrega Final
 
-> Este documento é uma **estrutura a ser preenchida pelo grupo**. As seções 4 e 5 trazem as
-> evidências técnicas já coletadas na preparação da entrega. A realização da cerimônia, os
-> participantes, as decisões e o feedback **ainda não ocorreram** e não foram registrados.
+> **Status da ata: preparada para validação e registro da cerimônia.** Conteúdo fornecido pelo
+> grupo em 23/10/2026. Data, demais participantes, feedback e aceitação formal das entregas
+> ainda serão registrados após a realização da Review. A mesma ata está no card
+> "Realizar a Sprint Review final e registrar a ata" do [board Trello](https://trello.com/b/hlOQ2wC8).
 
 ## 1. Objetivo da revisão
 
-Apresentar a aplicação final SafeVision Metaindústria / 2Identify, verificar se o incremento da
-Sprint 4 atende aos objetivos definidos (aplicação integrada, instalação reproduzível, testes e
-documentação) e registrar decisões e pendências.
+Apresentar a versão final do SafeVision Metaindústria — 2Identify, demonstrando a evolução da
+solução ao longo das quatro Sprints e os resultados obtidos com a integração entre software,
+inteligência artificial e hardware.
 
 | Campo | Preenchimento |
 |---|---|
-| Data | _a definir_ |
-| Participantes | _a preencher_ |
-| Facilitador | _a preencher_ |
+| Data | A confirmar |
+| Participantes | Arthur Bergamaço Alves (confirmado); demais a registrar |
+| Responsável pela condução | Arthur Bergamaço Alves |
 | Versão apresentada | branch `main` de <https://github.com/LMedeiros-Silva/metaindustria-seguranca-ia> |
+
+## Atividades desenvolvidas pelo grupo
+
+| Integrante | Área | Atividades |
+|---|---|---|
+| Leonardo Medeiros | Software | Aplicação administrativa, aplicação do operador, API, integração com PostgreSQL e comunicação entre os componentes. |
+| Arthur Bergamaço Alves | Inteligência Artificial | Desenvolvimento e aprimoramento da IA, modelos YOLO, detecção de EPIs e análise ergonômica. |
+| Breno Barbosa Pereira | Design | Desenho e organização visual das interfaces da aplicação administrativa. |
+| Mateus de Souza Santos | Hardware | Desenvolvimento e montagem do sistema físico de sinalização (ESP32 e torre luminosa). |
+| Renan Melo Rosembeng | Hardware | Desenvolvimento e montagem do sistema físico de sinalização (ESP32 e torre luminosa). |
+| Pietro Rodriguez | EPIs | Escolha dos EPIs utilizados no projeto e definição dos EPIs relevantes para o monitoramento industrial. |
 
 ## 2. Funcionalidades previstas para a Sprint 4
 
@@ -28,7 +40,14 @@ documentação) e registrar decisões e pendências.
 
 ## 3. Funcionalidades demonstradas
 
-Marque durante a Review. "Validado na preparação" indica o que já foi executado tecnicamente em
+Resultados apresentados pelo grupo: sistema administrativo, sistema do operador com autenticação e
+monitoramento, reconhecimento facial, detecção de EPIs por IA, monitoramento ergonômico,
+identificação de situações de risco, geração e registro de alertas, comunicação pela API,
+integração com PostgreSQL e sinalização com ESP32. O vídeo final demonstra o reconhecimento facial,
+a verificação de EPIs e a identificação de risco ergonômico, e mostra a estrutura do hardware e a
+aplicação administrativa.
+
+Marque a coluna "Demonstrado na Review" durante a cerimônia. "Validado na preparação" indica o que já foi executado tecnicamente em
 22/10/2026 (ver seção 4); não substitui a demonstração.
 
 | Funcionalidade | Validado na preparação | Demonstrado na Review | Observações |
@@ -114,16 +133,43 @@ demonstração gravada.
   prova de vida *baseline*, triagem ergonômica não validada por especialista, sem cadastro de EPIs,
   setores e contas de operador pela interface, tela "Configurações" do Admin é placeholder.
 
-## 6. Decisões e feedback do grupo
+## 6. Evolução ao longo das Sprints (apresentada na Review)
 
-_Preencher durante a Review._
+- **Sprint 1:** levantamento de requisitos, identificação do problema e definição da proposta de solução.
+- **Sprint 2:** desenvolvimento do protótipo, definição das interfaces e elaboração dos diagramas.
+- **Sprint 3:** evolução dos fluxos administrativos e operacionais, refinamento da arquitetura e
+  organização das atividades com Scrum.
+- **Sprint 4:** consolidação da aplicação funcional, integração dos componentes, testes,
+  documentação final e apresentação do produto.
+
+## 7. Feedback, decisões e pendências
+
+**Feedback recebido:** pendente de registro após a realização da Review.
+
+**Decisões e pendências:**
+
+- A solução possui evidências técnicas de funcionamento, testes automatizados e documentação consolidada.
+- A aceitação formal das entregas pelo grupo ainda precisa ser registrada.
 
 | # | Tema | Decisão / feedback | Responsável | Prazo |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
+| 1 | Aceitação formal das entregas da Sprint 4 | Pendente | _a registrar_ | _a registrar_ |
+| 2 | Feedback da Review | Pendente | _a registrar_ | _a registrar_ |
 
-## 7. Encaminhamentos
+## 8. Oportunidades de melhoria (encaminhamentos)
 
-_Preencher após a Review (itens que entram no backlog ou ficam como trabalhos futuros)._
+- Ampliar os testes em ambiente industrial real.
+- Realizar validações adicionais com o hardware físico.
+- Aprimorar a precisão e o desempenho dos modelos de IA.
+- Evoluir funcionalidades administrativas ainda parciais.
+- Fortalecer os mecanismos de segurança para utilização em produção.
+
+## 9. Conclusão
+
+A Sprint 4 representa a consolidação do projeto SafeVision Metaindústria — 2Identify, reunindo os
+principais componentes desenvolvidos ao longo das quatro Sprints. O resultado é uma solução
+integrada voltada ao monitoramento de EPIs e à identificação de riscos industriais, com potencial
+de contribuir para a prevenção de acidentes e para o acompanhamento das condições de segurança.
+
+Vídeo final: <https://youtu.be/2VN0RzsWvMM> · Repositório:
+<https://github.com/LMedeiros-Silva/metaindustria-seguranca-ia>
